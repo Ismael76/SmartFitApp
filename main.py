@@ -1,16 +1,36 @@
-# This is a sample Python script.
+from kivy.app import App
+from kivy.lang import Builder
+from kivy.uix.screenmanager import Screen
+from kivy.uix.button import ButtonBehavior
+from kivy.uix.image import Image
+import requests
+import json
 
-# Press Shift+F10 to execute it or replace it with your code.
-# Press Double Shift to search everywhere for classes, files, tool windows, actions, and settings.
+class HomeScreen(Screen):
+    pass
+
+class ImageButton(ButtonBehavior, Image): #Icons will act as 'buttons'
+    pass
+
+class SettingsScreen(Screen):
+    pass
+
+GUI = Builder.load_file("main.kv") #Loads 'main.kv' file that holds GUI layout
+class SmartFit(App):
+    def build(self):
+        return GUI
+
+    def on_start(self):
+        #Get DB data
+        result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/1.json")
+        data = json.loads(result.content.decode()) #Decoding the data into 'string' as it comes in binary format initially, then converting it into JSON format
+        print(data)
+
+    def change_screen(self, screen_name):
+        #Use 'screen_manager' to do this
+
+        screen_manager = self.root.ids['screen_manager']
+        screen_manager.current = screen_name #This will make the current screen be on whatever the screen name is
 
 
-def print_hi(name):
-    # Use a breakpoint in the code line below to debug your script.
-    print(f'Hi, {name}')  # Press Ctrl+F8 to toggle the breakpoint.
-
-
-# Press the green button in the gutter to run the script.
-if __name__ == '__main__':
-    print_hi('PyCharm')
-
-# See PyCharm help at https://www.jetbrains.com/help/pycharm/
+SmartFit().run()
