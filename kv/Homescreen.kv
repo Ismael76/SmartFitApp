@@ -3,27 +3,25 @@
 <Homescreen>:
     FloatLayout:
         #Icons for 'Menu' & 'Settings'
-        FloatLayout: #For 'settings' & 'menu' icons
-            canvas:
-                Color:
-                    rgb: utils.get_color_from_hex("#FDEA9F")
-                Rectangle: #Rectangle will get the colour of the 'rgb' above
-                    size: self.size
-                    pos: self.pos
-            rows: 1
-            pos_hint: {"top": 1}
-            size_hint: 1, .1
-            Image:
-                source: "icons/menu.png"
-                size_hint: 0.2, 0.5
-                pos_hint: {"top": 0.8}
-            Image:
-                source: "icons/SmartFit.png"
-                size_hint: 0.2, .9
-                pos_hint: {"top": 1, "x": 0.5}
+        AnchorLayout: #For 'settings' & 'menu' icons
+            anchor_x: 'center'
+            anchor_y: 'top'
+            orientation: 'vertical'
+            MDToolbar:
+                title: 'SmartFit'
+                left_action_items: [["menu", lambda x: app.navigation_draw()]]
+                right_action_items: [["dots-vertical", lambda x: app.navigation_draw()]]
+                elevation: 8
+
+            MDBottomAppBar:
+                MDToolbar:
+                    left_action_items: [["fire", lambda x: app.navigation_draw()], ["weight-lifter", lambda x: app.navigation_draw()]]
+                    right_action_items: [["account-group", lambda x: app.navigation_draw()], ["account", lambda x: app.navigation_draw()] ]
+                    type: 'bottom'
+                    icon: 'plus'
 
         #Avatar/User
-        GridLayout: #For 'avatar'
+        BoxLayout: #For 'avatar'
             rows: 1
             pos_hint: {"top": .9, "left": 1}
             size_hint: 1, .2
@@ -36,5 +34,16 @@
             id: name_label
             color: 0,0,0
 
+        Label:
+            pos_hint: {"top": .65, "right": 1}
+            size_hint: 1, .1
+            text: "LEVEL 2"
+            id: level_label
+            color: 0,0,0
+
+        MDProgressBar:
+            value: 5
+            pos_hint: {"top": .6, "right": 0.75}
+            size_hint: 0.5, .1
 
 
