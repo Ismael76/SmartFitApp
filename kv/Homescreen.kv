@@ -15,8 +15,8 @@
 
             MDBottomAppBar:
                 MDToolbar:
-                    left_action_items: [["fire", lambda x: app.navigation_draw()], ["weight-lifter", lambda x: app.navigation_draw()]]
-                    right_action_items: [["account-group", lambda x: app.navigation_draw()], ["account", lambda x: app.navigation_draw()] ]
+                    left_action_items: [["fire", lambda x: app.navigation_draw()], ["weight-lifter", lambda x: app.change_screen("log_screen")]]
+                    right_action_items: [["account-group", lambda x: app.change_screen("social_screen")], ["account", lambda x: app.change_screen("profile_screen")] ]
                     type: 'bottom'
                     icon: 'plus'
 
@@ -26,18 +26,21 @@
             pos_hint: {"top": .9, "left": 1}
             size_hint: 1, .2
             Image:
-                source: "icons/002-man.png"
+                source: "icons/avatars/002-man.png"
+                id: avatar_image
         Label:
             pos_hint: {"top": .7, "left": 1}
             size_hint: 1, .1
             text: "MUHAMMED ALI"
+            font_name: "Alphakind"
             id: name_label
             color: 0,0,0
 
         Label:
             pos_hint: {"top": .65, "right": 1}
             size_hint: 1, .1
-            text: "LEVEL 2"
+            text: ""
+            font_name: "Alphakind"
             id: level_label
             color: 0,0,0
 
@@ -45,5 +48,4 @@
             value: 5
             pos_hint: {"top": .6, "right": 0.75}
             size_hint: 0.5, .1
-
 

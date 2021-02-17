@@ -4,32 +4,80 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.button import ButtonBehavior
 from kivy.uix.image import Image
 from kivy.core.window import Window
+from workoutbanner import WorkoutBanner
+from kivy.core.text import LabelBase
+from kivy.uix.label import Label
 import requests
 import json
 
+LabelBase.register(name="Alphakind", fn_regular="Alphakind.ttf")
 Window.size = (350, 600) #Remove This Line When App Is Complete
 
 class HomeScreen(Screen):
     pass
 
+class SocialScreen(Screen):
+    pass
+
+class ProfileScreen(Screen):
+    pass
+
 class ImageButton(ButtonBehavior, Image): #Icons will act as 'buttons'
+    pass
+
+class LabelButton(ButtonBehavior, Label): #Icons will act as 'buttons'
     pass
 
 class SettingsScreen(Screen):
     pass
 
+class LogScreen(Screen):
+    pass
 
 class SmartFit(MDApp):
+    user_id = 1
     def build(self):
         self.theme_cls.primary_palette = 'Orange'
         GUI = Builder.load_file("main.kv")  # Loads 'main.kv' file that holds GUI layout
         return GUI
 
     def on_start(self):
+
         #Get DB data
         result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/1.json")
         data = json.loads(result.content.decode()) #Decoding the data into 'string' as it comes in binary format initially, then converting it into JSON format
-        print(data)
+
+        #Updates avatar from DB
+        avatar_image = self.root.ids['home_screen'].ids['avatar_image']
+        avatar_image.source = "icons/avatars/" + data['Avatar']
+        avatar_image = self.root.ids['profile_screen'].ids['avatar_image']
+        avatar_image.source = "icons/avatars/" + data['Avatar']
+
+        #Update 'user_id' on 'profile_screen'
+        user_id_label = self.root.ids['profile_screen'].ids['user_id_label']
+        user_id_label.text = "User ID: " + str(self.user_id)
+
+        #Updates level from DB
+        level = self.root.ids['home_screen'].ids['level_label']
+        level.text = "Level " + str(data['Level'])
+        level = self.root.ids['profile_screen'].ids['level_label']
+        level.text = "Level " + str(data['Level'])
+
+        #Updates name from DB
+        name = self.root.ids['home_screen'].ids['name_label']
+        name.text = data['Name']
+        name = self.root.ids['profile_screen'].ids['name_label']
+        name.text = data['Name']
+
+        #Adds to workout banner on the 'log_screen'
+        banner = self.root.ids['log_screen'].ids['banner_grid']
+        workouts = data['Workouts'][1:]
+
+        for workout in workouts:
+            W = WorkoutBanner(Workout_Image=workout['Workout_Image'], Description=workout['Description'],
+                              Unit_Image=workout['Unit_Image'], Number=workout['Number'], Unit=workout['Unit'],
+                              Likes=workout['Likes'])
+            banner.add_widget(W)
 
     def change_screen(self, screen_name):
         #Use 'screen_manager' to do this

@@ -1,5 +1,8 @@
 #:include kv/Homescreen.kv
 #:include kv/Settingsscreen.kv
+#:include kv/Logscreen.kv
+#:include kv/Profilescreen.kv
+#:include kv/Socialscreen.kv
 
 GridLayout:
     cols: 1
@@ -11,3 +14,12 @@ GridLayout:
         SettingsScreen:
             name: "settings_screen"
             id: settings_screen
+        LogScreen:
+            name: "log_screen"
+            id: log_screen
+        ProfileScreen:
+            name: "profile_screen"
+            id: profile_screen
+        SocialScreen:
+            name: "social_screen"
+            id: social_screen
