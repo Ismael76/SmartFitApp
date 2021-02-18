@@ -2,22 +2,31 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="befbbff0-a6bf-474c-8835-fb35190250ac" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/Alphakind.ttf" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/alphakind.zip" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/002-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/005-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/clock.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/heart.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/medal.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/workout/025-running.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kv/Logscreen.kv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kv/Profilescreen.kv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kv/Socialscreen.kv" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/workoutbanner.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/001-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/003-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/004-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/007-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/009-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/010-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/011-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/013-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/014-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/016-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/017-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/019-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/020-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/023-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/024-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/025-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/026-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/029-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/031-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/034-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/035-woman.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/avatars/036-man.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kv/Changeavatarscreen.kv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/icons/002-man.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/icons/settings.png" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Homescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Homescreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Profilescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Profilescreen.kv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.kv" beforeDir="false" afterPath="$PROJECT_DIR$/main.kv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
@@ -57,7 +66,7 @@
     <property name="RunOnceActivity.OpenProjectViewOnStart" value="true" />
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="SHARE_PROJECT_CONFIGURATION_FILES" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Friendly-Fitness-App-master/workoutbanner.py" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/../../Friendly-Fitness-App-master/main.py" />
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>

@@ -7,6 +7,8 @@ from kivy.core.window import Window
 from workoutbanner import WorkoutBanner
 from kivy.core.text import LabelBase
 from kivy.uix.label import Label
+from os import walk
+from functools import partial
 import requests
 import json
 
@@ -17,6 +19,9 @@ class HomeScreen(Screen):
     pass
 
 class SocialScreen(Screen):
+    pass
+
+class ChangeAvatarScreen(Screen):
     pass
 
 class ProfileScreen(Screen):
@@ -44,7 +49,7 @@ class SmartFit(MDApp):
     def on_start(self):
 
         #Get DB data
-        result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/1.json")
+        result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + str(self.user_id) + ".json")
         data = json.loads(result.content.decode()) #Decoding the data into 'string' as it comes in binary format initially, then converting it into JSON format
 
         #Updates avatar from DB
@@ -52,6 +57,13 @@ class SmartFit(MDApp):
         avatar_image.source = "icons/avatars/" + data['Avatar']
         avatar_image = self.root.ids['profile_screen'].ids['avatar_image']
         avatar_image.source = "icons/avatars/" + data['Avatar']
+
+        #Avatar change on 'profile_screen'
+        avatar_selection = self.root.ids['change_avatar_screen'].ids['avatar_selection']
+        for root_dir, folders, files in walk("icons/avatars"):
+            for avatar in files:
+                img = ImageButton(source="icons/avatars/" + avatar, on_release=partial(self.update_avatar, avatar))
+                avatar_selection.add_widget(img)
 
         #Update 'user_id' on 'profile_screen'
         user_id_label = self.root.ids['profile_screen'].ids['user_id_label']
@@ -79,6 +91,20 @@ class SmartFit(MDApp):
                               Likes=workout['Likes'])
             banner.add_widget(W)
 
+    #Changes avatar on app and also the DB
+    def update_avatar(self, image, widget_id):
+        avatar_image = self.root.ids['home_screen'].ids['avatar_image']
+        avatar_image.source = "icons/avatars/" + image
+        avatar_image = self.root.ids['profile_screen'].ids['avatar_image']
+        avatar_image.source = "icons/avatars/" + image
+
+        #Patch request to update data (Avatar Image) in DB
+        the_data = '{"Avatar": "%s"}' % image
+        requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + str(self.user_id) + ".json",
+                       data=the_data)
+
+        self.change_screen("profile_screen")
+        
     def change_screen(self, screen_name):
         #Use 'screen_manager' to do this
 
