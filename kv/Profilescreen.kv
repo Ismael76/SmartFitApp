@@ -52,21 +52,28 @@
             id: avatar_image
 
         ImageButton:
-            size_hint: 1, .1
+            size_hint: 1, .07
             pos_hint: {"top": .6, "right": .7}
             source: "icons/avatars/002-man.png"
             on_release:
                 print("Change Avatar")
 
         ImageButton:
-            size_hint: 1, .1
-            pos_hint: {"top": .45, "right": .7}
+            size_hint: 1, .07
+            pos_hint: {"top": .5, "right": .7}
             source: "icons/medal.png"
             on_release:
                 print("View Badges")
 
+        ImageButton:
+            size_hint: 1, .07
+            pos_hint: {"top": .4, "right": .7}
+            source: "icons/follow.png"
+            on_release:
+                app.change_screen("add_user_screen")
+
         LabelButton:
-            size_hint: 1, .1
+            size_hint: 1, .07
             pos_hint: {"top": .6, "right": 1}
             text: "Update Avatar"
             color: 0,0,0
@@ -75,10 +82,19 @@
                 app.change_screen("change_avatar_screen")
 
         LabelButton:
-            size_hint: 1, .1
-            pos_hint: {"top": .45, "right": 1}
+            size_hint: 1, .07
+            pos_hint: {"top": .5, "right": 1}
             text: "View Badges"
             color: 0,0,0
             font_name: "Alphakind"
             on_release:
                 print("View Badges")
+
+        LabelButton:
+            size_hint: 1, .07
+            pos_hint: {"top": .4, "right": 1}
+            text: "Add Friend"
+            color: 0,0,0
+            font_name: "Alphakind"
+            on_release:
+                app.change_screen("add_user_screen")

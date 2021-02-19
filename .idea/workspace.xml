@@ -2,33 +2,22 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="befbbff0-a6bf-474c-8835-fb35190250ac" name="Default Changelist" comment="">
-      <change afterPath="$PROJECT_DIR$/icons/avatars/001-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/003-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/004-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/007-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/009-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/010-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/011-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/013-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/014-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/016-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/017-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/019-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/020-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/023-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/024-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/025-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/026-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/029-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/031-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/034-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/035-woman.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/icons/avatars/036-man.png" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/kv/Changeavatarscreen.kv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/buttons.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/firebaseauthentication.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/friendlist.py" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/follow.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/icons/next.png" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kv/Adduserscreen.kv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kv/Loginscreen.kv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kv/Registerscreen.kv" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/refresh_token.txt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/workoutgrid.py" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kv/Profilescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Profilescreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Socialscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Socialscreen.kv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.kv" beforeDir="false" afterPath="$PROJECT_DIR$/main.kv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/workoutbanner.py" beforeDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -134,6 +123,27 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <configuration name="test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SmartFitApp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="workoutbanner" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
       <module name="SmartFitApp" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -157,8 +167,9 @@
     </configuration>
     <recent_temporary>
       <list>
-        <item itemvalue="Python.workoutbanner" />
         <item itemvalue="Python.Icon" />
+        <item itemvalue="Python.test" />
+        <item itemvalue="Python.workoutbanner" />
         <item itemvalue="Python.main (1)" />
       </list>
     </recent_temporary>

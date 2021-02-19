@@ -4,11 +4,20 @@
 #:include kv/Profilescreen.kv
 #:include kv/Socialscreen.kv
 #:include kv/Changeavatarscreen.kv
+#:include kv/Loginscreen.kv
+#:include kv/Registerscreen.kv
+#:include kv/Adduserscreen.kv
 
 GridLayout:
     cols: 1
     ScreenManager:
         id: screen_manager
+        LogInScreen:
+            name: "login_screen"
+            id: login_screen
+        RegisterScreen:
+            name: "register_screen"
+            id: register_screen
         HomeScreen:
             name: "home_screen"
             id: home_screen
@@ -27,3 +36,6 @@ GridLayout:
         ChangeAvatarScreen:
             name: "change_avatar_screen"
             id: change_avatar_screen
+        AddUserScreen:
+            name: "add_user_screen"
+            id: add_user_screen

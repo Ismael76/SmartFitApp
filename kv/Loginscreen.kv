@@ -1,0 +1,75 @@
+<Loginscreen>:
+    FloatLayout:
+        canvas:
+            Color:
+                rgb: utils.get_color_from_hex("#FF8C00")
+            Rectangle:
+                size: self.size
+                pos: self.pos
+        GridLayout:
+            rows: 1
+            size_hint: 1, .25
+            pos_hint:{"top": .9, "right": 1}
+            Image:
+                source: "icons/SmartFit.png"
+                id: logo
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .55, "right": .78}
+            MDTextFieldRound:
+                hint_text: "Enter email"
+                icon_right: "account"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .47, "right": .78}
+            MDTextFieldRound:
+                hint_text: "Enter password"
+                password: True
+                icon_right: "key-variant"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .38, "right": .94}
+            MDRectangleFlatButton:
+                text: "Login"
+                md_bg_color: 0, 0, 0, 1
+                font_name: "Alphakind"
+                on_release: app.change_screen("home_screen")
+
+        GridLayout:
+            rows: 1
+            size_hint: 1, .1
+            pos_hint:{"top": .3, "right": 1}
+            Label:
+                font_name: "Alphakind"
+                text: "Don't already have an account?"
+                color: 0,0,0
+
+        GridLayout:
+            rows: 1
+            size_hint: 1, .1
+            pos_hint:{"top": .2, "right": 1}
+            LabelButton:
+                canvas.before:
+                    Color:
+                        rgb: utils.get_color_from_hex("#FF8C00") if self.state == 'normal' else utils.get_color_from_hex("FFD42D")
+                    RoundedRectangle:
+                        size: self.size
+                        pos: self.pos
+                font_name: "Alphakind"
+                text: "Sign Up"
+                color: 0,0,0
+                underline: True
+                on_press: app.change_screen("register_screen")

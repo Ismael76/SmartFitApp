@@ -19,3 +19,15 @@
                     type: 'bottom'
                     icon: 'home'
                     on_action_button: app.change_screen("home_screen")
+
+        ScrollView:
+            pos_hint: {"top": .88, "right": 1}
+            size_hint: 1, .7
+            GridLayout:
+                id: friends_list_grid
+                cols: 1
+                spacing: 10,10
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: '100dp'
+                row_force_default: True

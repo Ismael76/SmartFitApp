@@ -5,7 +5,7 @@ from kivy.uix.image import Image
 from kivy.graphics import Color, Rectangle
 import kivy.utils
 
-class WorkoutBanner(GridLayout):
+class WorkoutGrid(GridLayout):
     rows = 1
 
     def __init__(self, **kwargs):

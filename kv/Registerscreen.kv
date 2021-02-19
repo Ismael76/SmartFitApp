@@ -1,0 +1,98 @@
+<Registerscreen>:
+    FloatLayout:
+        canvas:
+            Color:
+                rgb: utils.get_color_from_hex("#FF8C00")
+            Rectangle:
+                size: self.size
+                pos: self.pos
+
+        GridLayout:
+            rows: 1
+            size_hint: 1, .1
+            pos_hint:{"top": .95, "right": 1}
+            Image:
+                source: "icons/SmartFit.png"
+                id: logo
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .8, "right": .78}
+            MDTextFieldRound:
+                id: register_email
+                hint_text: "Enter email"
+                icon_right: "email"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .7, "right": .78}
+            MDTextFieldRound:
+                id: register_password
+                hint_text: "Enter password"
+                icon_right: "key-variant"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .6, "right": .78}
+            MDTextFieldRound:
+                id: register_name
+                hint_text: "Enter name"
+                icon_right: "account"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .5, "right": .78}
+            MDTextFieldRound:
+                id: register_weight
+                hint_text: "Enter weight (in kg)"
+                icon_right: "weight-kilogram"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .4, "right": .78}
+            MDTextFieldRound:
+                id: register_height
+                hint_text: "Enter height (in cm)"
+                icon_right: "human-male-height"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+
+        GridLayout:
+            rows: 1
+            size_hint: 1, .1
+            width: '200dp'
+            pos_hint:{"top": .2, "right": 1}
+            Label:
+                id: error_label
+                text: ""
+                color: 123, 0, 0
+                font_name: "Alphakind"
+
+        GridLayout:
+            rows: 1
+            size_hint_x: None
+            width: '200dp'
+            pos_hint:{"top": .3, "right": .94}
+            MDRectangleFlatButton:
+                text: "Register"
+                md_bg_color: 0, 0, 0, 1
+                font_name: "Alphakind"
+                on_release: app.authentication.register(register_email.text, register_password.text, register_name.text, register_weight.text, register_height.text)

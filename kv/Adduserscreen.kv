@@ -1,0 +1,51 @@
+<Adduserscreen>:
+    FloatLayout:
+        #Icons for 'Menu' & 'Settings'
+        AnchorLayout: #For 'settings' & 'menu' icons
+            anchor_x: 'center'
+            anchor_y: 'top'
+            orientation: 'vertical'
+            MDToolbar:
+                title: 'SmartFit'
+                left_action_items: [["menu", lambda x: app.navigation_draw()]]
+                right_action_items: [["dots-vertical", lambda x: app.navigation_draw()]]
+                elevation: 8
+
+            MDBottomAppBar:
+                MDToolbar:
+                    left_action_items: [["fire", lambda x: app.navigation_draw()], ["weight-lifter", lambda x: app.change_screen("log_screen")]]
+                    right_action_items: [["account-group", lambda x: app.change_screen("social_screen")], ["account", lambda x: app.change_screen("profile_screen")] ]
+                    type: 'bottom'
+                    icon: 'home'
+                    on_action_button: app.change_screen("home_screen")
+
+        FloatLayout:
+            MDTextFieldRound:
+                size_hint: .6, .1
+                pos_hint:{"top": .7, "right": .8}
+                id: add_friend_input
+                input_filter: 'float'
+                hint_text: "Enter user ID"
+                icon_right: "account-plus"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+            Label:
+                size_hint: .8, .1
+                pos_hint:{"top": .5, "right": .9}
+                id: add_friend_label
+                font_name: "Alphakind"
+                text: ""
+                color: 0,0,0
+
+            Label:
+                size_hint: .8, .2
+                pos_hint:{"top": .95, "right": .9}
+                font_name: "Alphakind"
+                text: "Add a friend"
+                color: 0,0,0
+
+            ImageButton:
+                source: "icons/next.png"
+                size_hint: .4, .1
+                pos_hint:{"top": .7, "right": 1}
+                on_release: app.add_friend(add_friend_input.text)
