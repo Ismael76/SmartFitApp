@@ -4,7 +4,11 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.button import ButtonBehavior
 from kivy.uix.image import Image
 from kivy.core.window import Window
+from kivymd.uix.snackbar import Snackbar
+
 from workoutgrid import WorkoutGrid
+from kivymd.uix.menu import MDDropdownMenu
+from kivy.properties import ObjectProperty
 from kivy.core.text import LabelBase
 from kivy.uix.label import Label
 from firebaseauthentication import Authentication
@@ -53,7 +57,7 @@ class LogScreen(Screen):
     pass
 
 class SmartFit(MDApp):
-    user_id = 1
+    my_user_id = 1
     def build(self):
         self.authentication = Authentication()
         self.theme_cls.primary_palette = 'Orange'
@@ -61,6 +65,9 @@ class SmartFit(MDApp):
         return GUI
 
     def on_start(self):
+
+        #Adding items to drop down menu
+
         # Avatar change on 'profile_screen'
         avatar_selection = self.root.ids['change_avatar_screen'].ids['avatar_selection']
         for root_dir, folders, files in walk("icons/avatars"):
@@ -90,13 +97,13 @@ class SmartFit(MDApp):
             avatar_image.source = "icons/avatars/" + data['Avatar']
 
             #Get the users friends list
-            self.friends_list = data['Friends'][1:]
+            self.friends_list = data['Friends']
             self.user_name = data['Name']
             self.level = data['Level']
 
             #Update 'user_id' on 'profile_screen'
             user_id_label = self.root.ids['profile_screen'].ids['user_id_label']
-            user_id_label.text = "User ID: " + str(self.user_id)
+            user_id_label.text = "User ID: " + str(self.my_user_id)
 
             #Updates level from DB
             level = self.root.ids['home_screen'].ids['level_label']
@@ -125,13 +132,19 @@ class SmartFit(MDApp):
             print(friends_list_array)
             for friend in friends_list_array:
                 friend = friend.replace(" ", "")
-                friend_banner = FriendList(friend_id=friend, name=self.user_name, level=self.level)
-                self.root.ids["social_screen"].ids["friends_list_grid"].add_widget(friend_banner)
+                if friend == "":
+                    continue
+                else:
+                    friend_banner = FriendList(friend_id=friend, name=self.user_name, level=self.level)
+                    self.root.ids["social_screen"].ids["friends_list_grid"].add_widget(friend_banner)
 
             self.change_screen("home_screen")
 
         except Exception as e:
             pass
+
+    def logout(self,):
+        pass
 
     #Changes avatar on app and also the DB
     def update_avatar(self, image, widget_id):
@@ -142,7 +155,7 @@ class SmartFit(MDApp):
 
         #Patch request to update data (Avatar Image) in DB
         the_data = '{"Avatar": "%s"}' % image
-        requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + str(self.user_id) + ".json",
+        requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + str(self.my_user_id) + ".json",
                        data=the_data)
 
         self.change_screen("profile_screen")
@@ -156,23 +169,34 @@ class SmartFit(MDApp):
     def navigation_draw(self):
         print("Navigation")
 
+
     #Checks DB and ensure the user_id exists, then adds the user if it exists
     def add_friend(self, user_id):
+        user_id = user_id.replace("\n", "")
         check_request = requests.get('https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/.json?orderBy="User_Id"&equalTo=' + user_id)
         data = check_request.json()
 
+        try:
+            int_user_id = int(user_id)
+        except:
+            # Friend id had some letters in it when it should just be a number
+            self.root.ids['add_user_screen'].ids['add_friend_label'].text = "Please enter a valid user id"
+            return
+        if user_id == self.my_user_id:
+            self.root.ids['add_user_screen'].ids['add_friend_label'].text = "You can't add yourself as a friend"
+            return
+        if user_id in self.friends_list:
+            self.root.ids['add_user_screen'].ids['add_friend_label'].text = "This user is already added to your friend's list"
+            return
         if data == {}:
-            self.root.ids["add_user_screen"].ids["add_friend_label"].text = "This user does not exist"
-        elif user_id in self.friends_list:
-            self.root.ids["add_user_screen"].ids["add_friend_label"].text = "You already have this user added"
+            self.root.ids['add_user_screen'].ids['add_friend_label'].text = "This user does not exist"
         else:
             key = list(data.keys())[0]
             new_friend_id = data[key]['User_Id']
             self.root.ids["add_user_screen"].ids["add_friend_label"].text = "User %s has been successfully added" % user_id
-            self.friends_list += ", %s" % user_id
+            self.friends_list += ",%s" % user_id
             patch_data = '{"Friends": "%s"}' % self.friends_list
             friend_patch = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s.json?auth=%s" % (self.local_id, self.id_token), data=patch_data)
-
             friend_banner = FriendList(friend_id=user_id, name=self.user_name, level=self.level)
             self.root.ids["social_screen"].ids["friends_list_grid"].add_widget(friend_banner)
 

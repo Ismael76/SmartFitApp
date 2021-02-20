@@ -59,6 +59,7 @@
             MDTextFieldRound:
                 id: register_weight
                 hint_text: "Enter weight (in kg)"
+                input_filter: 'float'
                 icon_right: "weight-kilogram"
                 color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
@@ -71,6 +72,7 @@
             MDTextFieldRound:
                 id: register_height
                 hint_text: "Enter height (in cm)"
+                input_filter: 'float'
                 icon_right: "human-male-height"
                 color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
@@ -95,4 +97,5 @@
                 text: "Register"
                 md_bg_color: 0, 0, 0, 1
                 font_name: "Alphakind"
-                on_release: app.authentication.register(register_email.text, register_password.text, register_name.text, register_weight.text, register_height.text)
+                on_release:
+                    app.authentication.register(register_email.text, register_password.text, register_name.text, register_weight.text, register_height.text)
