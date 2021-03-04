@@ -1,0 +1,165 @@
+<Workoutscreen>:
+    FloatLayout:
+        AnchorLayout: #For 'settings' & 'menu' icons
+            rows: 1
+            anchor_x: 'center'
+            anchor_y: 'top'
+            orientation: 'vertical'
+
+            MDToolbar:
+                title: 'SmartFit'
+                left_action_items: [["menu", lambda x: app.navigation_draw()]]
+                right_action_items: [["dots-vertical", lambda x: app.navigation_draw()]]
+                elevation: 8
+
+            MDBottomAppBar:
+                MDToolbar:
+                    left_action_items: [["fire", lambda x: app.navigation_draw()], ["weight-lifter", lambda x: app.change_screen("log_screen")]]
+                    right_action_items: [["account-group", lambda x: app.change_screen("social_screen")], ["account", lambda x: app.change_screen("profile_screen")] ]
+                    type: 'bottom'
+                    icon: 'home'
+                    on_action_button: app.change_screen("home_screen")
+
+
+        Label:
+            text: "Select Workout Image"
+            size_hint: 1, .05
+            pos_hint: {"top": .9, "right": 1}
+            color: 0,0,0
+            font_name: "Alphakind"
+
+        ScrollView:
+            size_hint: 1, .1
+            pos_hint: {"top": .85, "right": 1}
+            GridLayout:
+                canvas:
+                    Color:
+                        rgb: utils.get_color_from_hex("#FFFFFF")
+                    Rectangle:
+                        size: self.size
+                        pos: self.pos
+                rows: 1
+                size_hint_x: None
+                width: self.minimum_width
+                col_default_width: "100dp"
+                col_force_default: True
+                id: workout_icons_grid
+
+        TextInput:
+            size_hint: .9, .05
+            pos_hint: {"top": .7, "right": .95}
+            id: workout_description
+            hint_text: "Workout description"
+            on_text:
+                self.background_color = (1,1,1,1)
+            font_name: "Alphakind"
+
+        GridLayout:
+            size_hint: 1, .1
+            pos_hint: {"top": .6, "right": 1}
+            rows: 1
+            ImageButton:
+                source: "icons/clock.png"
+                on_release:
+                    time_label.color = 0, 1, 0
+                    distance_label.color = 0, 0, 0
+                    repetitions_label.color = 0, 0, 0
+                    app.choice = self.source
+            ImageButton:
+                source: "icons/distance.png"
+                on_release:
+                    distance_label.color = 0, 1, 0
+                    repetitions_label.color = 0, 0, 0
+                    time_label.color = 0, 0, 0
+                    app.choice = self.source
+            ImageButton:
+                source: "icons/repetitions.png"
+                on_release:
+                    repetitions_label.color = 0, 1, 0
+                    time_label.color = 0, 0, 0
+                    distance_label.color = 0, 0, 0
+                    app.choice = self.source
+
+        GridLayout:
+            rows: 1
+            size_hint: 1, .05
+            pos_hint: {"top": .5, "right": 1}
+            LabelButton:
+                color: 0,0,0
+                font_name: "Alphakind"
+                text: "Time"
+                id: time_label
+            LabelButton:
+                color: 0,0,0
+                font_name: "Alphakind"
+                text: "Distance"
+                id: distance_label
+            LabelButton:
+                color: 0,0,0
+                font_name: "Alphakind"
+                text: "Repetitions"
+                id: repetitions_label
+
+        TextInput:
+            size_hint: .4, .05
+            pos_hint: {"top": .4, "right": .5}
+            hint_text: "Amount"
+            id: amount_input
+            input_filter: 'float'
+            font_name: "Alphakind"
+            on_text:
+                self.background_color = (1,1,1,1)
+        TextInput:
+            size_hint: .4, .05
+            pos_hint: {"top": .4, "right": .9}
+            hint_text: "Units"
+            id: units_input
+            on_text:
+                self.background_color = (1,1,1,1)
+            font_name: "Alphakind"
+        TextInput:
+            size_hint: .8, .05
+            pos_hint: {"top": .35, "right": .9}
+            hint_text: "Calories burnt"
+            input_filter: 'float'
+            id: calories_input
+            on_text:
+                self.background_color = (1,1,1,1)
+            font_name: "Alphakind"
+        TextInput:
+            size_hint: .25, .05
+            pos_hint: {"top": .3, "right": .9}
+            hint_text: "Year"
+            input_filter: 'float'
+            id: year_input
+            on_text:
+                self.background_color = (1,1,1,1)
+            font_name: "Alphakind"
+        TextInput:
+            size_hint: .3, .05
+            pos_hint: {"top": .3, "right": .65}
+            hint_text: "Month"
+            input_filter: 'float'
+            id: month_input
+            on_text:
+                self.background_color = (1,1,1,1)
+            font_name: "Alphakind"
+        TextInput:
+            size_hint: .25, .05
+            pos_hint: {"top": .3, "right": .35}
+            hint_text: "Day"
+            input_filter: 'float'
+            id: day_input
+            on_text:
+                self.background_color = (1,1,1,1)
+            font_name: "Alphakind"
+
+        LabelButton:
+            text: "Log Workout"
+            underline: True
+            font_name: "Alphakind"
+            color: 0,0,1
+            size_hint: .35, .07
+            pos_hint: {"top": .2, "right": 1}
+            on_release:
+                app.log_workout()

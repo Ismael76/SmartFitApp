@@ -19,6 +19,7 @@
                     right_action_items: [["account-group", lambda x: app.change_screen("social_screen")], ["account", lambda x: app.change_screen("profile_screen")] ]
                     type: 'bottom'
                     icon: 'plus'
+                    on_action_button: app.change_screen("workout_screen")
 
         #Avatar/User
         BoxLayout: #For 'avatar'

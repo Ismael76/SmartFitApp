@@ -5,6 +5,7 @@ from kivy.uix.button import ButtonBehavior
 from kivy.uix.image import Image
 from kivy.core.window import Window
 from kivymd.uix.snackbar import Snackbar
+from kivy.graphics import Color, RoundedRectangle
 
 from workoutgrid import WorkoutGrid
 from kivymd.uix.menu import MDDropdownMenu
@@ -15,6 +16,7 @@ from firebaseauthentication import Authentication
 from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDRectangleFlatButton
 from os import walk
+import kivy.utils
 from functools import partial
 import requests
 import json
@@ -24,6 +26,9 @@ LabelBase.register(name="Alphakind", fn_regular="Alphakind.ttf")
 Window.size = (350, 600) #Remove This Line When App Is Complete
 
 class HomeScreen(Screen):
+    pass
+
+class WorkoutScreen(Screen):
     pass
 
 class LogInScreen(Screen):
@@ -58,11 +63,30 @@ class LogScreen(Screen):
 
 class SmartFit(MDApp):
     my_user_id = 1
+    workout_icon = None
+    choice = None
+    workout_icon_widget = ""
+    previous_workout_icon_widget = None
+
     def build(self):
         self.authentication = Authentication()
         self.theme_cls.primary_palette = 'Orange'
         GUI = Builder.load_file("main.kv")  # Loads 'main.kv' file that holds GUI layout
         return GUI
+
+    #Identifies what icon is selected for the log workout screen
+    def update_workout_icon(self, filename, widget_id):
+        self.previous_workout_icon_widget = self.workout_icon_widget
+        self.workout_icon = filename
+        self.workout_icon_widget = widget_id
+
+        if self.previous_workout_icon_widget:
+            self.previous_workout_icon_widget.canvas.before.clear()
+
+        #Display what workout icon has been selected
+        with self.workout_icon_widget.canvas.before:
+            Color(rgb=(kivy.utils.get_color_from_hex("#6C5B7B")))
+            RoundedRectangle(size=self.workout_icon_widget.size, pos=self.workout_icon_widget.pos, radius=[5, ])
 
     def on_start(self):
 
@@ -74,6 +98,13 @@ class SmartFit(MDApp):
             for avatar in files:
                 img = ImageButton(source="icons/avatars/" + avatar, on_release=partial(self.update_avatar, avatar))
                 avatar_selection.add_widget(img)
+
+        #Populate workout icons
+        workout_selection = self.root.ids['workout_screen'].ids['workout_icons_grid']
+        for root_dir, folders, files in walk("icons/workout"):
+            for workout_icon in files:
+                img = ImageButton(source="icons/workout/" + workout_icon, on_release=partial(self.update_workout_icon, workout_icon))
+                workout_selection.add_widget(img)
 
         try:
             with open("refresh_token.txt", 'r') as f:
@@ -119,12 +150,13 @@ class SmartFit(MDApp):
 
             #Adds to workout banner on the 'log_screen'
             banner = self.root.ids['log_screen'].ids['banner_grid']
-            workouts = data['Workouts'][1:]
-
-            for workout in workouts:
+            workouts = data['Workouts']
+            workout_keys = workouts.keys()
+            for workout_key in workout_keys:
+                workout = workouts[workout_key]
                 W = WorkoutGrid(Workout_Image=workout['Workout_Image'], Description=workout['Description'],
-                                  Unit_Image=workout['Unit_Image'], Number=workout['Number'], Unit=workout['Unit'],
-                                  Likes=workout['Likes'])
+                                  Unit_Image=workout['Unit_Image'], Amount=workout['Amount'], Units=workout['Units'],
+                                  Likes=workout['Likes'], Date=workout['Date'])
                 banner.add_widget(W)
 
             #Populate friends list on app
@@ -199,5 +231,63 @@ class SmartFit(MDApp):
             friend_patch = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s.json?auth=%s" % (self.local_id, self.id_token), data=patch_data)
             friend_banner = FriendList(friend_id=user_id, name=self.user_name, level=self.level)
             self.root.ids["social_screen"].ids["friends_list_grid"].add_widget(friend_banner)
+
+    def log_workout(self):
+        #Gets user data (Entries in log screen)
+        workout_screen = self.root.ids["workout_screen"]
+        workout_description = workout_screen.ids["workout_description"].text
+        workout_amount = workout_screen.ids["amount_input"].text
+        workout_unit = workout_screen.ids["units_input"].text
+        workout_month_date = workout_screen.ids["month_input"].text
+        workout_year_date = workout_screen.ids["year_input"].text
+        workout_day_date = workout_screen.ids["day_input"].text
+        workout_calories_burnt = workout_screen.ids["calories_input"].text
+
+        #Checks if user fields (With data) are appropriate
+        if self.workout_icon == None:
+            pass
+            return
+        if self.choice == None:
+            workout_screen.ids["time_label"].color = 123, 0, 0
+            workout_screen.ids["distance_label"].color = 123, 0, 0
+            workout_screen.ids["repetitions_label"].color = 123, 0, 0
+            return
+        if workout_description == "":
+            workout_screen.ids["workout_description"].background_color = 123, 0, 0
+            return
+        if workout_amount == "":
+            workout_screen.ids["amount_input"].background_color = 123, 0, 0
+            return
+        if workout_unit == "":
+            workout_screen.ids["units_input"].background_color = 123, 0, 0
+            return
+        if workout_calories_burnt == "":
+            workout_screen.ids["calories_input"].background_color = 123, 0, 0
+            return
+        if workout_day_date == "":
+            workout_screen.ids["day_input"].background_color = 123, 0, 0
+            return
+        if workout_month_date == "":
+            workout_screen.ids["month_input"].background_color = 123, 0, 0
+            return
+        if workout_year_date == "":
+            workout_screen.ids["year_input"].background_color = 123, 0, 0
+            return
+
+        #If fields are ok update the DB
+        workout_data = {"Workout_Image": self.workout_icon, "Description": workout_description, "Likes": 0, "Amount": workout_amount,
+                        "Units": workout_unit, "Unit_Image": self.choice, "Date": workout_day_date + "/" + workout_month_date + "/" + workout_year_date}
+
+        workout_req = requests.post("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Workouts.json?auth=%s" %(self.local_id, self.id_token),
+                                    data=json.dumps(workout_data))
+
+        banner = self.root.ids['log_screen'].ids['banner_grid']
+
+        W = WorkoutGrid(Workout_Image=self.workout_icon, Description=workout_description,
+                          Unit_Image=self.choice, Amount=workout_amount, Units=workout_unit,
+                          Likes="0", Date=workout_day_date + "/" + workout_month_date + "/" + workout_year_date)
+        banner.add_widget(W, index=len(banner.children))
+
+        self.change_screen("home_screen")
 
 SmartFit().run()
