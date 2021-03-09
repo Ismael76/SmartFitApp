@@ -15,16 +15,16 @@ class Authentication():
 
 
         height = main_app.root.ids["register_screen"].ids["register_height"]
-        height_text = height.text
+        self.height_text = height.text
 
         weight = main_app.root.ids["register_screen"].ids["register_weight"]
-        weight_text = weight.text
+        self.weight_text = weight.text
 
         name = main_app.root.ids["register_screen"].ids["register_name"]
-        name_text = name.text
+        self.name_text = name.text
 
 
-        if height_text == "" or name_text == "" or weight_text == "" :
+        if self.weight_text == "" or self.name_text == "" or self.height_text == "" :
             App.get_running_app().root.ids['register_screen'].ids['error_label'].text = "Please fill in all the fields"
             #Firebase checks if email & password are correct
         else:
@@ -54,15 +54,38 @@ class Authentication():
                 friend_patch_req = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/.json?auth=" + idToken, data=friend_patch_data)
 
                 #Create user with a localID & default information
-                the_data = '{"Avatar": "002-man.png", "Friends": "", "Workouts": "", "Level": "1", "Name": "Ali", "User_Id": %s}' % User_Id
+                the_data = {"Avatar": "002-man.png", "Friends": "", "Workouts": "", "Level": "1", "Name": self.name_text, "User_Id": User_Id, "Weight": self.weight_text, "Height": self.height_text}
                 requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + localId + ".json?auth=" + idToken,
-                               data=the_data)
+                               data=json.dumps(the_data))
 
                 App.get_running_app().on_start()
                 App.get_running_app().change_screen("home_screen")
 
+    #Authenticate users when they try to log onto the app
     def login(self, email, password):
-        pass
+        login_url = "https://www.googleapis.com/identitytoolkit/v3/relyingparty/verifyPassword?key=" + self.api_key
+        login_data = {"email": email, "password": password, "returnSecureToken": True}
+        login_req = requests.post(login_url, data=login_data)
+        login_dict = json.loads(login_req.content.decode())
+
+        if login_req.ok == True:
+            refresh_token = login_dict['refreshToken']
+            localId = login_dict['localId']
+            idToken = login_dict['idToken']
+            with open("refresh_token.txt", "w") as f:
+                f.write(refresh_token)
+
+            #Save localId & idToken
+            App.get_running_app().local_id = localId
+            App.get_running_app().id_token = idToken
+
+            App.get_running_app().on_start()
+            App.get_running_app().change_screen("home_screen")
+
+        elif login_req.ok == False:
+            error_data = json.loads(login_req.content.decode())
+            error_message = error_data["error"]['message']
+            App.get_running_app().root.ids['login_screen'].ids['error_label'].text = error_message
 
     #Automatic sign in if refresh_token is present
     def exchange_refresh_token(self, refresh_token):

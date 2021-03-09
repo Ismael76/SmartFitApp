@@ -24,6 +24,7 @@
                 icon_right: "account"
                 color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
+                id: user_email
 
         GridLayout:
             rows: 1
@@ -36,6 +37,7 @@
                 icon_right: "key-variant"
                 color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
+                id: user_password
 
         GridLayout:
             rows: 1
@@ -46,7 +48,7 @@
                 text: "Login"
                 md_bg_color: 0, 0, 0, 1
                 font_name: "Alphakind"
-                on_release: app.change_screen("home_screen")
+                on_release: app.authentication.login(user_email.text, user_password.text)
 
         GridLayout:
             rows: 1
@@ -73,3 +75,14 @@
                 color: 0,0,0
                 underline: True
                 on_press: app.change_screen("register_screen")
+
+        GridLayout:
+            rows: 1
+            size_hint: 1, .1
+            width: '200dp'
+            pos_hint:{"top": .1, "right": 1}
+            Label:
+                id: error_label
+                text: ""
+                color: 123, 0, 0
+                font_name: "Alphakind"

@@ -50,3 +50,126 @@
             pos_hint: {"top": .6, "right": 0.75}
             size_hint: 0.5, .1
 
+        GridLayout:
+            canvas:
+                Color:
+                    rgb: utils.get_color_from_hex("#000000")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            pos_hint: {"top": .5, "right": .95}
+            size_hint: .9, .03
+        Label:
+            pos_hint: {"top": .534, "right": .72}
+            size_hint: 1, .1
+            text: "BMI CALCULATOR"
+            font_name: "Alphakind"
+        Label:
+            pos_hint: {"top": .454, "right": .65}
+            size_hint: 1, .1
+            text: ""
+            id: weight_label
+            font_name: "Alphakind"
+            font_size: '20dp'
+            color: 0,0,0
+        Label:
+            pos_hint: {"top": .454, "right": .8}
+            size_hint: 1, .1
+            text: "|"
+            font_name: "Alphakind"
+            font_size: '25dp'
+            color: 0,0,0
+        Label:
+            pos_hint: {"top": .454, "right": .97}
+            size_hint: 1, .1
+            text: ""
+            id: height_label
+            font_name: "Alphakind"
+            font_size: '20dp'
+            color: 0,0,0
+
+        Image:
+            pos_hint: {"top": .454, "right": 1}
+            size_hint: .4, .1
+            source: "icons/circle.png"
+
+        Label:
+            pos_hint: {"top": .454, "right": 1}
+            size_hint: .4, .1
+            text: ""
+            id: bmi_label
+            font_name: "Alphakind"
+            font_size: '30dp'
+            color: 0,0,0
+
+        GridLayout:
+            canvas:
+                Color:
+                    rgb: utils.get_color_from_hex("#00FF22")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            pos_hint: {"top": .33, "right": 1}
+            size_hint: .55, .08
+
+        Label:
+            pos_hint: {"top": .34, "right": 1}
+            size_hint: .45, .1
+            text: "Normal Weight \n       18 - 25"
+            font_name: "Alphakind"
+            font_size: '17dp'
+            color: 0,0,0
+
+        GridLayout:
+            canvas:
+                Color:
+                    rgb: utils.get_color_from_hex("#FFF700")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            pos_hint: {"top": .33, "right": .5}
+            size_hint: .55, .08
+
+        Label:
+            pos_hint: {"top": .34, "right": .75}
+            size_hint: 1, .1
+            text: "Underweight < 18"
+            font_name: "Alphakind"
+            font_size: '17dp'
+            color: 0,0,0
+
+        GridLayout:
+            canvas:
+                Color:
+                    rgb: utils.get_color_from_hex("#FF0000")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            pos_hint: {"top": .245, "right": 1}
+            size_hint: .55, .08
+
+        Label:
+            pos_hint: {"top": .26, "right": 1}
+            size_hint: .45, .1
+            text: "Obese > 30"
+            font_name: "Alphakind"
+            font_size: '17dp'
+            color: 0,0,0
+
+        GridLayout:
+            canvas:
+                Color:
+                    rgb: utils.get_color_from_hex("#FF9100")
+                Rectangle:
+                    size: self.size
+                    pos: self.pos
+            pos_hint: {"top": .245, "right": .5}
+            size_hint: .55, .08
+
+        Label:
+            pos_hint: {"top": .25, "right": .75}
+            size_hint: 1, .1
+            text: "Overweight \n    25 - 30"
+            font_name: "Alphakind"
+            font_size: '17dp'
+            color: 0,0,0
