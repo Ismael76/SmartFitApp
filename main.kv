@@ -8,38 +8,114 @@
 #:include kv/Registerscreen.kv
 #:include kv/Adduserscreen.kv
 #:include kv/Workoutscreen.kv
+#:include kv/Friendscreen.kv
 
 GridLayout:
     cols: 1
-    ScreenManager:
-        id: screen_manager
-        LogInScreen:
-            name: "login_screen"
-            id: login_screen
-        RegisterScreen:
-            name: "register_screen"
-            id: register_screen
-        HomeScreen:
-            name: "home_screen"
-            id: home_screen
-        SettingsScreen:
-            name: "settings_screen"
-            id: settings_screen
-        LogScreen:
-            name: "log_screen"
-            id: log_screen
-        ProfileScreen:
-            name: "profile_screen"
-            id: profile_screen
-        SocialScreen:
-            name: "social_screen"
-            id: social_screen
-        ChangeAvatarScreen:
-            name: "change_avatar_screen"
-            id: change_avatar_screen
-        AddUserScreen:
-            name: "add_user_screen"
-            id: add_user_screen
-        WorkoutScreen:
-            name: "workout_screen"
-            id: workout_screen
+    NavigationLayout:
+        ScreenManager:
+            id: screen_manager
+            LogInScreen:
+                name: "login_screen"
+                id: login_screen
+            RegisterScreen:
+                name: "register_screen"
+                id: register_screen
+            HomeScreen:
+                name: "home_screen"
+                id: home_screen
+            SettingsScreen:
+                name: "settings_screen"
+                id: settings_screen
+            LogScreen:
+                name: "log_screen"
+                id: log_screen
+            ProfileScreen:
+                name: "profile_screen"
+                id: profile_screen
+            SocialScreen:
+                name: "social_screen"
+                id: social_screen
+            ChangeAvatarScreen:
+                name: "change_avatar_screen"
+                id: change_avatar_screen
+            AddUserScreen:
+                name: "add_user_screen"
+                id: add_user_screen
+            WorkoutScreen:
+                name: "workout_screen"
+                id: workout_screen
+            FriendScreen:
+                name: "friend_screen"
+                id: friend_screen
+        MDNavigationDrawer:
+            id: nav_drawer
+            BoxLayout:
+                spacing: '8dp'
+                padding: '8dp'
+                orientation: 'vertical'
+                Image:
+                    size_hint: 1, .4
+                    source: "icons/avatars/002-man.png"
+                    id: nav_avatar_image
+                MDLabel:
+                    id: nav_user_name
+                    size_hint: 1, .1
+                    pos_hint: {"top": 1, "right": 1}
+                    text_size: self.size
+                    halign: 'center'
+                    text: ''
+                    color: 0,0,0
+                    font_name: "Alphakind"
+                MDLabel:
+                    id: nav_user_email
+                    size_hint: 1, .1
+                    pos_hint: {"top": 1, "right": 1}
+                    text_size: self.size
+                    halign: 'center'
+                    text: ''
+                    color: 0,0,0
+                    font_name: "Alphakind"
+                ScrollView:
+                    MDList:
+                        OneLineIconListItem:
+                            text: 'Profile'
+                            on_press:
+                                root.ids['nav_drawer'].set_state("close")
+                                app.change_screen("profile_screen")
+                            IconLeftWidget:
+                                icon: 'account'
+
+                        OneLineIconListItem:
+                            text: 'View Friends'
+                            on_press:
+                                root.ids['nav_drawer'].set_state("close")
+                                app.change_screen("social_screen")
+                            IconLeftWidget:
+                                icon: 'account-group'
+
+                        OneLineIconListItem:
+                            text: 'Add Workout'
+                            on_press:
+                                root.ids['nav_drawer'].set_state("close")
+                                app.change_screen("workout_screen")
+                            IconLeftWidget:
+                                icon: 'plus'
+
+                        OneLineIconListItem:
+                            text: 'View Log'
+                            on_press:
+                                root.ids['nav_drawer'].set_state("close")
+                                app.change_screen("log_screen")
+                            IconLeftWidget:
+                                icon: 'weight-lifter'
+
+                        OneLineIconListItem:
+                            text: 'Sign Out'
+                            on_press:
+                                root.ids['nav_drawer'].set_state("close")
+                                app.logout()
+                            IconLeftWidget:
+                                icon: 'logout'
+
+

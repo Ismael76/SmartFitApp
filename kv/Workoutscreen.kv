@@ -8,8 +8,7 @@
 
             MDToolbar:
                 title: 'SmartFit'
-                left_action_items: [["menu", lambda x: app.navigation_draw()]]
-                right_action_items: [["dots-vertical", lambda x: app.navigation_draw()]]
+                left_action_items: [["menu", lambda x: app.nav_drawer()]]
                 elevation: 8
 
             MDBottomAppBar:
@@ -132,6 +131,7 @@
             hint_text: "Year"
             input_filter: 'float'
             id: year_input
+            disabled: not check_box.active
             on_text:
                 self.background_color = (1,1,1,1)
             font_name: "Alphakind"
@@ -141,6 +141,7 @@
             hint_text: "Month"
             input_filter: 'float'
             id: month_input
+            disabled: not check_box.active
             on_text:
                 self.background_color = (1,1,1,1)
             font_name: "Alphakind"
@@ -149,6 +150,7 @@
             pos_hint: {"top": .3, "right": .35}
             hint_text: "Day"
             input_filter: 'float'
+            disabled: not check_box.active
             id: day_input
             on_text:
                 self.background_color = (1,1,1,1)
@@ -163,3 +165,18 @@
             pos_hint: {"top": .2, "right": 1}
             on_release:
                 app.log_workout()
+
+        MDCheckbox:
+            size_hint: 1, .1
+            pos_hint: {"top": .25, "right": .65}
+            id: check_box
+            color: 0,0,0
+            active: False
+
+        Label:
+            size_hint: 1, .1
+            pos_hint: {"top": .25, "right": .8}
+            font_name: "Alphakind"
+            color: 0,0,0
+            text: "Edit Date"
+

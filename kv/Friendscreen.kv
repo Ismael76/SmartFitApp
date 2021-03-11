@@ -1,4 +1,4 @@
-<Changeavatarscreen>:
+<Friendscreen>:
     FloatLayout:
         AnchorLayout: #For 'settings' & 'menu' icons
             rows: 1
@@ -19,24 +19,24 @@
                     type: 'bottom'
                     icon: 'home'
                     on_action_button: app.change_screen("home_screen")
-    Label:
-        size_hint: 1, .1
-        pos_hint:{"top": .92, "right": 1}
-        color: 0,0,0
-        text: "Select a new avatar image"
-        font_name: "Alphakind"
-
-    ScrollView:
-        pos_hint: {"top": .85, "right": 1}
-        size_hint: 1, .7
-        GridLayout:
-            cols: 3
-            id: avatar_selection
-            size_hint_y: None
-            height: self.minimum_height
-            row_default_height: '80dp'
-            row_force_default: True
-            spacing: 10,10
-            padding:10, 10
 
 
+        ScrollView:
+            pos_hint: {"top": .88, "right": 1}
+            size_hint: 1, .7
+            GridLayout:
+                id: friend_banner_grid
+                cols: 1
+                spacing: 10,10
+                size_hint_y: None
+                height: self.minimum_height
+                row_default_height: '100dp'
+                row_force_default: True
+
+        MDLabel:
+            pos_hint: {"top": .6, "right": 1}
+            size_hint: .9, .1
+            id: no_friend_activity_label
+            text: "This user has no logged activities"
+            color: 0, 0, 0
+            font_name: "Alphakind"

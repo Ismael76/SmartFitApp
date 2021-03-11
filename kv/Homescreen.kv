@@ -9,8 +9,7 @@
             orientation: 'vertical'
             MDToolbar:
                 title: 'SmartFit'
-                left_action_items: [["menu", lambda x: app.navigation_draw()]]
-                right_action_items: [["dots-vertical", lambda x: app.drop_down.open(x)]]
+                left_action_items: [["menu", lambda x: app.nav_drawer()]]
                 elevation: 8
 
             MDBottomAppBar:
@@ -88,18 +87,13 @@
             font_size: '20dp'
             color: 0,0,0
 
-        Image:
-            pos_hint: {"top": .454, "right": 1}
-            size_hint: .4, .1
-            source: "icons/circle.png"
-
         Label:
             pos_hint: {"top": .454, "right": 1}
             size_hint: .4, .1
             text: ""
             id: bmi_label
             font_name: "Alphakind"
-            font_size: '30dp'
+            font_size: '40dp'
             color: 0,0,0
 
         GridLayout:
@@ -109,7 +103,7 @@
                 Rectangle:
                     size: self.size
                     pos: self.pos
-            pos_hint: {"top": .33, "right": 1}
+            pos_hint: {"top": .325, "right": 1}
             size_hint: .55, .08
 
         Label:
@@ -127,7 +121,7 @@
                 Rectangle:
                     size: self.size
                     pos: self.pos
-            pos_hint: {"top": .33, "right": .5}
+            pos_hint: {"top": .325, "right": .5}
             size_hint: .55, .08
 
         Label:

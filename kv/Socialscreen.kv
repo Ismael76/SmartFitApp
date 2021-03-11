@@ -8,8 +8,7 @@
 
             MDToolbar:
                 title: 'SmartFit'
-                left_action_items: [["menu", lambda x: app.navigation_draw()]]
-                right_action_items: [["dots-vertical", lambda x: app.navigation_draw()]]
+                left_action_items: [["menu", lambda x: app.nav_drawer()]]
                 elevation: 8
 
             MDBottomAppBar:
@@ -32,3 +31,11 @@
                 height: self.minimum_height
                 row_default_height: '100dp'
                 row_force_default: True
+
+        MDLabel:
+            pos_hint: {"top": .6, "right": 1}
+            size_hint: .95, .1
+            id: no_friend_label
+            text: "You currently do not have any friends"
+            color: 0, 0, 0
+            font_name: "Alphakind"
