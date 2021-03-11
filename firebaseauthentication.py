@@ -1,6 +1,8 @@
 import requests
 import json
 from kivy.app import App
+from kivy.network.urlrequest import UrlRequest
+import certifi
 
 class Authentication():
     api_key = "AIzaSyAiE0NHSX-n8i-indM7bOwJVFO5LiKvAts"
@@ -98,3 +100,13 @@ class Authentication():
         id_token = refresh_req.json()['id_token']
         local_id = refresh_req.json()['user_id']
         return id_token, local_id
+
+    def update_likes(self, friend_id, workout_key, likes, *args):
+        app = App.get_running_app()
+        patch_data = '{"Likes": %s}' % (likes)
+        check_req = requests.get('https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/.json?orderBy="User_Id"&equalTo=' + friend_id)
+        data = check_req.json()
+        friend_local_id = list(data.keys())[0]
+
+        self.update_likes_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Workouts/%s.json?auth=" % (friend_local_id, workout_key) + app.id_token,
+                                                 req_body=patch_data , ca_file=certifi.where(), method='PATCH',)

@@ -93,6 +93,9 @@ class SmartFit(MDApp):
 
     def on_start(self):
 
+        self.root.ids["social_screen"].ids["no_friend_label"].text = "You currently do not have any friends"
+        self.root.ids['log_screen'].ids['no_activity_label'].text = "You do not have logged activities"
+
         #Populate the day, month & year inputs in the 'add workout' screen
         current_date = datetime.now()
         day = current_date.day
@@ -307,11 +310,14 @@ class SmartFit(MDApp):
         self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0
         self.root.ids['login_screen'].ids['user_email'].text = ""
         self.root.ids['login_screen'].ids['user_password'].text = ""
+        self.root.ids['login_screen'].ids['error_label'].text = ""
         self.root.ids['register_screen'].ids['register_email'].text = ""
         self.root.ids['register_screen'].ids['register_password'].text = ""
         self.root.ids['register_screen'].ids['register_name'].text = ""
         self.root.ids['register_screen'].ids['register_weight'].text = ""
         self.root.ids['register_screen'].ids['register_height'].text = ""
+        self.root.ids['register_screen'].ids['error_label'].text = ""
+
 
     def nav_drawer(self):
         nav_drawer = self.root.ids['nav_drawer']
@@ -361,6 +367,8 @@ class SmartFit(MDApp):
         userdata_request = requests.get('https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/.json?orderBy="User_Id"&equalTo=' + user_id)
         data = userdata_request.json()
 
+        self.friends_id = user_id
+
         workouts = list(data.values())[0]['Workouts']
         banner = self.root.ids['friend_screen'].ids['friend_banner_grid']
 
@@ -370,16 +378,21 @@ class SmartFit(MDApp):
                 banner.remove_widget(W)
 
         #Populate friend screen
-        if workouts != "":
-            self.root.ids['log_screen'].ids['no_friend_activity_label'].text = ""
-            for key in workouts.keys():
-                workout = workouts[key]
-                workout_keys.sort(key=lambda value: datetime.strptime(workouts[value]['Date'], "%m/%d/%Y"))
-                workout_keys = workout_keys[::-1]
-                W = WorkoutGrid(Workout_Image=workout['Workout_Image'], Description=workout['Description'],
-                                Unit_Image=workout['Unit_Image'], Amount=workout['Amount'], Units=workout['Units'],
-                                Likes=workout['Likes'], Date=workout['Date'])
-                banner.add_widget(W)
+        if workouts == "":
+            self.root.ids['friend_screen'].ids['no_friend_activity_label'].text = "This user has no logged activities"
+            self.change_screen("friend_screen")
+            return
+
+        workout_keys = list(workouts.keys())
+        workout_keys.sort(key=lambda value: datetime.strptime(workouts[value]['Date'], "%m/%d/%Y"))
+        workout_keys = workout_keys[::-1]
+        self.root.ids['friend_screen'].ids['no_friend_activity_label'].text = ""
+        for key in workout_keys:
+            workout = workouts[key]
+            W = WorkoutGrid(Workout_Image=workout['Workout_Image'], Description=workout['Description'],
+                            Unit_Image=workout['Unit_Image'], Amount=workout['Amount'], Units=workout['Units'],
+                            Likes=workout['Likes'], can_like=True, Date=workout['Date'], workout_key=key)
+            banner.add_widget(W)
 
         self.change_screen("friend_screen")
 
