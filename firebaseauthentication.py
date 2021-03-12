@@ -61,7 +61,7 @@ class Authentication():
                 friend_patch_req = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/.json?auth=" + idToken, data=friend_patch_data)
 
                 #Create user with a localID & default information
-                the_data = {"Avatar": "002-man.png", "Friends": "", "Workouts": "", "Level": "1", "Name": self.name_text, "Email": self.email_text, "User_Id": User_Id, "Weight": self.weight_text, "Height": self.height_text}
+                the_data = {"Avatar": "002-man.png", "Friends": "", "Workouts": "", "Level": "1", "Name": self.name_text, "Email": self.email_text, "User_Id": User_Id, "Weight": self.weight_text, "Height": self.height_text, "Xp": 5}
                 requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + localId + ".json?auth=" + idToken,
                                data=json.dumps(the_data))
 

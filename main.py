@@ -14,13 +14,16 @@ from kivy.core.text import LabelBase
 from kivy.uix.label import Label
 from firebaseauthentication import Authentication
 from kivymd.uix.textfield import MDTextField
-from kivymd.uix.button import MDRectangleFlatButton
+from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton
 from os import walk
 import kivy.utils
 from functools import partial
 import requests
 import json
 from friendlist import FriendList
+from kivymd.uix.dialog import MDDialog
+from kivy.network.urlrequest import UrlRequest
+import certifi
 
 LabelBase.register(name="Alphakind", fn_regular="Alphakind.ttf")
 Window.size = (350, 600) #Remove This Line When App Is Complete
@@ -167,11 +170,17 @@ class SmartFit(MDApp):
                 bmi_label.color = 1, 0, 0
                 #Note: To get RGB colours above we get the three rgb colour values from rapidtables.com then we divide each one by 255
 
+
             #Get the users friends list
             self.friends_list = data['Friends']
             self.user_name = data['Name']
             self.user_email = data['Email']
             self.level = data['Level']
+            self.xp = data['Xp']
+
+            #Populate users progress bar based on Xp from the DB
+            progress_bar = self.root.ids['home_screen'].ids['progress_bar']
+            progress_bar.value = self.xp
 
             #Update 'user_id' on 'profile_screen'
             user_id_label = self.root.ids['profile_screen'].ids['user_id_label']
@@ -188,7 +197,6 @@ class SmartFit(MDApp):
             name.text = data['Name']
             name = self.root.ids['profile_screen'].ids['name_label']
             name.text = data['Name']
-
 
             #Adds to workout banner on the 'log_screen'
             banner = self.root.ids['log_screen'].ids['banner_grid']
@@ -218,7 +226,6 @@ class SmartFit(MDApp):
                     data = userdata_request.json()
                     friend_banner = FriendList(friend_id=friend, name=str(list(data.values())[0]['Name']), level=str(list(data.values())[0]['Level']))
                     self.root.ids["social_screen"].ids["friends_list_grid"].add_widget(friend_banner)
-
             self.change_screen("home_screen")
 
         except Exception as e:
@@ -408,6 +415,8 @@ class SmartFit(MDApp):
         workout_day_date = workout_screen.ids["day_input"].text
         workout_calories_burnt = workout_screen.ids["calories_input"].text
 
+        self.xp_earnt = 0
+
         #Checks if user fields (With data) are appropriate
         if self.workout_icon == None:
             pass
@@ -453,8 +462,44 @@ class SmartFit(MDApp):
                           Likes="0", Date=workout_day_date + "/" + workout_month_date + "/" + workout_year_date)
         banner.add_widget(W, index=len(banner.children))
 
+
         self.change_screen("home_screen")
 
+        #Based off how many calories a user burns they gain the relevant xp
+        if int(workout_calories_burnt) == 0:
+            self.xp_earnt = 0
+        if int(workout_calories_burnt) > 100 and int(workout_calories_burnt) < 300:
+            self.xp_earnt = 5
+            #Add xp to progress bar
+            self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+        elif int(workout_calories_burnt) > 300 and int(workout_calories_burnt) < 700:
+            self.xp_earnt = 10
+            self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+        elif int(workout_calories_burnt) > 700 and int(workout_calories_burnt) < 1000:
+            self.xp_earnt = 20
+            self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+        elif int(workout_calories_burnt) > 1000 and int(workout_calories_burnt) < 2000:
+            self.xp_earnt = 30
+            self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+        else:
+            self.xp_earnt = 40
+            self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+
+        close_button = MDRoundFlatButton(text="Close", on_release=self.close_dialog)
+        self.dialog = MDDialog(title="[font=Alphakind.ttf]Workout Logged[/font]", text="[font=Alphakind.ttf]You have logged a workout and have earnt %s xp[/font]" %(self.xp_earnt), size_hint=(0.7, 1),
+                               buttons=[close_button],)
+        self.dialog.open()
+
+        #Sends xp to DB
+        patch_xp = '{"Xp": %s}' % (self.xp + int(self.xp_earnt))
+
+        #Updates the DB with new XP
+        self.update_xp_request = UrlRequest(
+            "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+            self.local_id, self.id_token), req_body=patch_xp, ca_file=certifi.where(), method='PATCH', )
+
+
+        #Clear workout widgets once a workout has been logged
         self.root.ids['workout_screen'].ids['workout_description'].text = ""
         self.root.ids['workout_screen'].ids['workout_description'].text = ""
         self.root.ids['workout_screen'].ids['amount_input'].text = ""
@@ -463,5 +508,8 @@ class SmartFit(MDApp):
         self.root.ids['workout_screen'].ids['repetitions_label'].color = 0, 0, 0
         self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0
         self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0
+
+    def close_dialog(self, obj):
+        self.dialog.dismiss()
 
 SmartFit().run()
