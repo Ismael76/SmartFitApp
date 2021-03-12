@@ -4,7 +4,7 @@ from kivy.app import App
 from kivy.network.urlrequest import UrlRequest
 import certifi
 from kivymd.uix.dialog import MDDialog
-from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton
+from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton, MDFlatButton
 
 class Authentication():
     api_key = "AIzaSyAiE0NHSX-n8i-indM7bOwJVFO5LiKvAts"
@@ -112,7 +112,7 @@ class Authentication():
 
         self.update_likes_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Workouts/%s.json?auth=" % (friend_local_id, workout_key) + app.id_token,
                                                  req_body=patch_data , ca_file=certifi.where(), method='PATCH',)
-        close_button = MDRoundFlatButton(text="Close", on_release=self.close_dialog)
+        close_button = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
         self.dialog = MDDialog(text="[font=Alphakind.ttf]You have liked this workout[/font]", size_hint=(0.7, 1), buttons=[close_button],)
         self.dialog.open()
 

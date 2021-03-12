@@ -4,17 +4,18 @@ from kivy.uix.screenmanager import Screen
 from kivy.uix.button import ButtonBehavior
 from kivy.uix.image import Image
 from kivy.core.window import Window
+from kivymd.uix.list import OneLineAvatarListItem
 from kivymd.uix.snackbar import Snackbar
 from kivy.graphics import Color, RoundedRectangle
 from datetime import datetime
 from workoutgrid import WorkoutGrid
 from kivymd.uix.menu import MDDropdownMenu
-from kivy.properties import ObjectProperty
+from kivy.properties import ObjectProperty, StringProperty
 from kivy.core.text import LabelBase
 from kivy.uix.label import Label
 from firebaseauthentication import Authentication
 from kivymd.uix.textfield import MDTextField
-from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton
+from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton, MDFlatButton
 from os import walk
 import kivy.utils
 from functools import partial
@@ -66,6 +67,10 @@ class SettingsScreen(Screen):
 
 class LogScreen(Screen):
     pass
+
+class Item(OneLineAvatarListItem):
+    divider = None
+    source = StringProperty()
 
 class SmartFit(MDApp):
     my_user_id = 1
@@ -173,6 +178,8 @@ class SmartFit(MDApp):
 
             #Get the users friends list
             self.friends_list = data['Friends']
+
+            #User details
             self.user_name = data['Name']
             self.user_email = data['Email']
             self.level = data['Level']
@@ -300,6 +307,12 @@ class SmartFit(MDApp):
         self.change_screen("profile_screen")
 
     def change_screen(self, screen_name):
+        result = requests.get(
+            "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json?auth=" + self.id_token)
+        data = json.loads(result.content.decode())
+
+        self.level = data['Level']
+        self.xp = data['Xp']
         #Use 'screen_manager' to do this
         screen_manager = self.root.ids['screen_manager']
         screen_manager.current = screen_name #This will make the current screen be on whatever the screen name is
@@ -468,36 +481,47 @@ class SmartFit(MDApp):
         #Based off how many calories a user burns they gain the relevant xp
         if int(workout_calories_burnt) == 0:
             self.xp_earnt = 0
-        if int(workout_calories_burnt) > 100 and int(workout_calories_burnt) < 300:
+            self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+
+        elif int(workout_calories_burnt) > 100 and int(workout_calories_burnt) < 300:
             self.xp_earnt = 5
             #Add xp to progress bar
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+
         elif int(workout_calories_burnt) > 300 and int(workout_calories_burnt) < 700:
             self.xp_earnt = 10
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+
         elif int(workout_calories_burnt) > 700 and int(workout_calories_burnt) < 1000:
             self.xp_earnt = 20
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+
         elif int(workout_calories_burnt) > 1000 and int(workout_calories_burnt) < 2000:
             self.xp_earnt = 30
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
-        else:
+
+        elif int(workout_calories_burnt) > 2000:
             self.xp_earnt = 40
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        close_button = MDRoundFlatButton(text="Close", on_release=self.close_dialog)
-        self.dialog = MDDialog(title="[font=Alphakind.ttf]Workout Logged[/font]", text="[font=Alphakind.ttf]You have logged a workout and have earnt %s xp[/font]" %(self.xp_earnt), size_hint=(0.7, 1),
-                               buttons=[close_button],)
-        self.dialog.open()
 
         #Sends xp to DB
         patch_xp = '{"Xp": %s}' % (self.xp + int(self.xp_earnt))
 
         #Updates the DB with new XP
-        self.update_xp_request = UrlRequest(
-            "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
-            self.local_id, self.id_token), req_body=patch_xp, ca_file=certifi.where(), method='PATCH', )
+        self.update_xp_request = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s.json?auth=%s" % (self.local_id, self.id_token), data=patch_xp)
 
+
+        close_button = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
+        self.dialog = MDDialog(title="[font=Alphakind.ttf]Workout Logged[/font]",
+                               text="[font=Alphakind.ttf]You have logged a workout and have earnt %s xp[/font]" % (self.xp_earnt), size_hint=(0.7, 1),
+                               buttons=[close_button])
+        self.dialog.open()
+
+        if self.root.ids['home_screen'].ids['progress_bar'].value == 100:
+            self.level = int(self.level) + 1
+            self.increase_lvl()
+            return
 
         #Clear workout widgets once a workout has been logged
         self.root.ids['workout_screen'].ids['workout_description'].text = ""
@@ -508,6 +532,48 @@ class SmartFit(MDApp):
         self.root.ids['workout_screen'].ids['repetitions_label'].color = 0, 0, 0
         self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0
         self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0
+
+    #Increases the level of the user when they level up
+    def increase_lvl(self):
+        self.dialog.dismiss()
+
+        #If user reaches certain levels they earn badges as a reward
+        if (self.level) == 2:
+            close_button1 = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
+            self.dialog = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[
+            Item(text="[font=Alphakind.ttf]Level 2 badge Unlocked[/font]", source="icons/002-medal.png"),
+            ], buttons=[close_button1])
+
+            self.dialog.open()
+
+        close_button = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
+        self.dialog = MDDialog(title="[font=Alphakind.ttf]Level Gain[/font]",
+                               text="[font=Alphakind.ttf]Congratulations! You have levelled up, you are now level %s[/font]" % (
+                                   self.level), size_hint=(0.7, 1),
+                               buttons=[close_button], )
+        self.dialog.open()
+
+        #Updates DB with new user lvl
+        patch_lvl = '{"Level": %s}' % (self.level)
+        patch_xp = '{"Xp": 0}'
+
+        #Updates the DB with new XP
+        self.update_xp_request = UrlRequest(
+            "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=patch_xp, ca_file=certifi.where(), method='PATCH', )
+
+        #Updates DB with new user lvl
+        self.update_lvl_request = UrlRequest(
+            "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=patch_lvl, ca_file=certifi.where(), method='PATCH', )
+
+        self.root.ids['home_screen'].ids['progress_bar'].value = 0
+
+        #Updates level from DB
+        level = self.root.ids['home_screen'].ids['level_label']
+        level.text = "Level " + str(self.level)
+        level = self.root.ids['profile_screen'].ids['level_label']
+        level.text = "Level " + str(self.level)
 
     def close_dialog(self, obj):
         self.dialog.dismiss()
