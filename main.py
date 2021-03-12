@@ -56,6 +56,9 @@ class ChangeAvatarScreen(Screen):
 class ProfileScreen(Screen):
     pass
 
+class BadgeScreen(Screen):
+    pass
+
 class ImageButton(ButtonBehavior, Image): #Icons will act as 'buttons'
     pass
 
@@ -184,6 +187,7 @@ class SmartFit(MDApp):
             self.user_email = data['Email']
             self.level = data['Level']
             self.xp = data['Xp']
+            self.user_id = data['User_Id']
 
             #Populate users progress bar based on Xp from the DB
             progress_bar = self.root.ids['home_screen'].ids['progress_bar']
@@ -220,6 +224,16 @@ class SmartFit(MDApp):
                                       Unit_Image=workout['Unit_Image'], Amount=workout['Amount'], Units=workout['Units'],
                                       Likes=workout['Likes'], Date=workout['Date'])
                     banner.add_widget(W)
+
+            #Populate users badge collection
+            badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
+            self.badges = data['Badges']
+            if self.badges != "":
+                badge_keys = list(self.badges.keys())
+                for badge_key in badge_keys:
+                    badge = self.badges[badge_key]
+                    img = Image(source=badge['Badges'])
+                    badge_collection.add_widget(img)
 
             #Populate friends list on app
             friends_list_array = self.friends_list.split(",")
@@ -289,6 +303,11 @@ class SmartFit(MDApp):
             if w.__class__ == WorkoutGrid:
                 friend_workout_log.remove_widget(w)
 
+        #Clearing previous users badges
+        badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
+        for w in badge_collection.walk():
+            badge_collection.remove_widget(w)
+
 
     #Changes avatar on app and also the DB
     def update_avatar(self, image, widget_id):
@@ -307,12 +326,6 @@ class SmartFit(MDApp):
         self.change_screen("profile_screen")
 
     def change_screen(self, screen_name):
-        result = requests.get(
-            "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json?auth=" + self.id_token)
-        data = json.loads(result.content.decode())
-
-        self.level = data['Level']
-        self.xp = data['Xp']
         #Use 'screen_manager' to do this
         screen_manager = self.root.ids['screen_manager']
         screen_manager.current = screen_name #This will make the current screen be on whatever the screen name is
@@ -360,7 +373,7 @@ class SmartFit(MDApp):
             # Friend id had some letters in it when it should just be a number
             self.root.ids['add_user_screen'].ids['add_friend_label'].text = "Please enter a valid user id"
             return
-        if user_id == self.my_user_id:
+        if user_id == self.user_id:
             self.root.ids['add_user_screen'].ids['add_friend_label'].text = "You can't add yourself as a friend"
             return
         if user_id in self.friends_list:
@@ -418,6 +431,12 @@ class SmartFit(MDApp):
 
 
     def log_workout(self):
+        result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json?auth=" + self.id_token)
+        data = json.loads(result.content.decode())
+
+        self.level = data['Level']
+        self.xp = data['Xp']
+
         #Gets user data (Entries in log screen)
         workout_screen = self.root.ids["workout_screen"]
         workout_description = workout_screen.ids["workout_description"].text
@@ -521,7 +540,6 @@ class SmartFit(MDApp):
         if self.root.ids['home_screen'].ids['progress_bar'].value == 100:
             self.level = int(self.level) + 1
             self.increase_lvl()
-            return
 
         #Clear workout widgets once a workout has been logged
         self.root.ids['workout_screen'].ids['workout_description'].text = ""
@@ -533,29 +551,35 @@ class SmartFit(MDApp):
         self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0
         self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0
 
+
     #Increases the level of the user when they level up
     def increase_lvl(self):
         self.dialog.dismiss()
 
+        result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json?auth=" + self.id_token)
+        data = json.loads(result.content.decode())
+
+        self.badge = ""
+
         #If user reaches certain levels they earn badges as a reward
         if (self.level) == 2:
-            close_button1 = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
-            self.dialog = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[
-            Item(text="[font=Alphakind.ttf]Level 2 badge Unlocked[/font]", source="icons/002-medal.png"),
-            ], buttons=[close_button1])
+            self.badge = "icons/badges/002-medal.png"
+            close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 2 badge Unlocked[/font]",
+            source=self.badge), ], buttons=[close_button2])
+            self.dialog2.open()
 
-            self.dialog.open()
-
-        close_button = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
+        close_button1 = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
         self.dialog = MDDialog(title="[font=Alphakind.ttf]Level Gain[/font]",
                                text="[font=Alphakind.ttf]Congratulations! You have levelled up, you are now level %s[/font]" % (
                                    self.level), size_hint=(0.7, 1),
-                               buttons=[close_button], )
+                               buttons=[close_button1],)
         self.dialog.open()
 
         #Updates DB with new user lvl
         patch_lvl = '{"Level": %s}' % (self.level)
         patch_xp = '{"Xp": 0}'
+        post_badges = {"Badges": self.badge}
 
         #Updates the DB with new XP
         self.update_xp_request = UrlRequest(
@@ -567,6 +591,10 @@ class SmartFit(MDApp):
             "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
                 self.local_id, self.id_token), req_body=patch_lvl, ca_file=certifi.where(), method='PATCH', )
 
+        #Updates DB with new user badge
+        self.update_badge_request = requests.post("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" %(self.local_id, self.id_token),
+                                    data=json.dumps(post_badges))
+
         self.root.ids['home_screen'].ids['progress_bar'].value = 0
 
         #Updates level from DB
@@ -575,7 +603,16 @@ class SmartFit(MDApp):
         level = self.root.ids['profile_screen'].ids['level_label']
         level.text = "Level " + str(self.level)
 
+        #Populate users badge collection
+        badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
+        img = Image(source=self.badge)
+        badge_collection.add_widget(img)
+
     def close_dialog(self, obj):
-        self.dialog.dismiss()
+        self.dialog.dismiss(force=True)
+
+
+    def close_dialog2(self, obj):
+        self.dialog2.dismiss(force=True)
 
 SmartFit().run()

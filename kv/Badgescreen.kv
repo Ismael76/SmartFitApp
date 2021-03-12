@@ -1,0 +1,41 @@
+<Badgescreen>:
+    FloatLayout:
+        AnchorLayout: #For 'settings' & 'menu' icons
+            rows: 1
+            anchor_x: 'center'
+            anchor_y: 'top'
+            orientation: 'vertical'
+
+            MDToolbar:
+                title: 'SmartFit'
+                left_action_items: [["menu", lambda x: app.nav_drawer()]]
+
+                elevation: 8
+
+            MDBottomAppBar:
+                MDToolbar:
+                    left_action_items: [["fire", lambda x: app.navigation_draw()], ["weight-lifter", lambda x: app.change_screen("log_screen")]]
+                    right_action_items: [["account-group", lambda x: app.change_screen("social_screen")], ["account", lambda x: app.change_screen("profile_screen")] ]
+                    type: 'bottom'
+                    icon: 'home'
+                    on_action_button: app.change_screen("home_screen")
+
+    Label:
+        size_hint: 1, .1
+        pos_hint:{"top": .92, "right": 1}
+        color: 0,0,0
+        text: "Badge Collection"
+        font_name: "Alphakind"
+
+    ScrollView:
+        pos_hint: {"top": .85, "right": 1}
+        size_hint: 1, .7
+        GridLayout:
+            cols: 1
+            id: badge_collection
+            size_hint_y: None
+            height: self.minimum_height
+            row_default_height: '80dp'
+            row_force_default: True
+            spacing: 10,10
+            padding:10, 10

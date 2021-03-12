@@ -9,6 +9,7 @@
 #:include kv/Adduserscreen.kv
 #:include kv/Workoutscreen.kv
 #:include kv/Friendscreen.kv
+#:include kv/Badgescreen.kv
 
 <Item>
     ImageLeftWidget:
@@ -51,6 +52,9 @@ GridLayout:
             FriendScreen:
                 name: "friend_screen"
                 id: friend_screen
+            BadgeScreen:
+                name: "badge_screen"
+                id: badge_screen
         MDNavigationDrawer:
             id: nav_drawer
             BoxLayout:
