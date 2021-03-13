@@ -18,6 +18,7 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton, MDFlatButton
 from os import walk
 import kivy.utils
+from kivy.app import App
 from functools import partial
 import requests
 import json
@@ -82,12 +83,14 @@ class SmartFit(MDApp):
     workout_icon = None
     choice = None
     workout_icon_widget = ""
+    refresh_file = "refresh_token.txt"
     previous_workout_icon_widget = None
 
     def build(self):
         self.authentication = Authentication()
         self.theme_cls.primary_palette = 'Orange'
         GUI = Builder.load_file("main.kv")  # Loads 'main.kv' file that holds GUI layout
+        self.refresh_file = App.get_running_app().user_data_dir + self.refresh_file
         return GUI
 
     #Identifies what icon is selected for the log workout screen
@@ -133,9 +136,8 @@ class SmartFit(MDApp):
                 workout_selection.add_widget(img)
 
         try:
-            with open("refresh_token.txt", 'r') as f:
+            with open(self.refresh_file, 'r') as f:
                 refresh_token = f.read()
-                #self.change_screen("home_screen") #Remove This Line After Done
 
             #Getting new idToken
             id_token, local_id = self.authentication.exchange_refresh_token(refresh_token)
@@ -255,7 +257,7 @@ class SmartFit(MDApp):
             pass
 
     def logout(self,):
-        with open("refresh_token.txt", 'w') as f:
+        with open(self.refresh_file, 'w') as f:
             f.write("")
         self.change_screen("login_screen")
 

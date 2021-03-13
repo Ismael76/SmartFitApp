@@ -47,7 +47,7 @@ class Authentication():
                 idToken = register_dict['idToken']
 
                 #Save refreshToken locally so users can refresh their sessions
-                with open("refresh_token.txt", "w") as f:
+                with open(App.get_running_app().refresh_file, "w") as f:
                     f.write(refresh_token)
 
                 #Save localId & idToken
@@ -79,7 +79,7 @@ class Authentication():
             refresh_token = login_dict['refreshToken']
             localId = login_dict['localId']
             idToken = login_dict['idToken']
-            with open("refresh_token.txt", "w") as f:
+            with open(App.get_running_app().refresh_file, "w") as f:
                 f.write(refresh_token)
 
             #Save localId & idToken
