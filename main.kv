@@ -10,6 +10,7 @@
 #:include kv/Workoutscreen.kv
 #:include kv/Friendscreen.kv
 #:include kv/Badgescreen.kv
+#:include kv/Foodsearchscreen.kv
 
 <Item>
     ImageLeftWidget:
@@ -55,6 +56,9 @@ GridLayout:
             BadgeScreen:
                 name: "badge_screen"
                 id: badge_screen
+            FoodSearchScreen:
+                name: "food_search_screen"
+                id: food_search_screen
         MDNavigationDrawer:
             id: nav_drawer
             BoxLayout:
@@ -116,6 +120,14 @@ GridLayout:
                                 app.change_screen("log_screen")
                             IconLeftWidget:
                                 icon: 'weight-lifter'
+
+                        OneLineIconListItem:
+                            text: 'Search Foods'
+                            on_press:
+                                root.ids['nav_drawer'].set_state("close")
+                                app.change_screen("food_search_screen")
+                            IconLeftWidget:
+                                icon: 'magnify'
 
                         OneLineIconListItem:
                             text: 'Sign Out'

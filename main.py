@@ -2,7 +2,7 @@ from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
 from kivy.uix.button import ButtonBehavior
-from kivy.uix.image import Image
+from kivy.uix.image import Image, AsyncImage
 from kivy.core.window import Window
 from kivymd.uix.list import OneLineAvatarListItem
 from kivymd.uix.snackbar import Snackbar
@@ -45,6 +45,9 @@ class RegisterScreen(Screen):
     pass
 
 class FriendScreen(Screen):
+    pass
+
+class FoodSearchScreen(Screen):
     pass
 
 class SocialScreen(Screen):
@@ -350,6 +353,12 @@ class SmartFit(MDApp):
         self.root.ids['register_screen'].ids['register_weight'].text = ""
         self.root.ids['register_screen'].ids['register_height'].text = ""
         self.root.ids['register_screen'].ids['error_label'].text = ""
+        self.root.ids['food_search_screen'].ids['carb_label'].text = ""
+        self.root.ids['food_search_screen'].ids['prot_label'].text = ""
+        self.root.ids['food_search_screen'].ids['fat_label'].text = ""
+        self.root.ids['food_search_screen'].ids['calories_label'].text = ""
+        self.root.ids['food_search_screen'].ids['food_search'].text = ""
+        self.root.ids['food_search_screen'].ids['food_img'].source = ""
 
 
     def nav_drawer(self):
@@ -614,5 +623,50 @@ class SmartFit(MDApp):
 
     def close_dialog2(self, obj):
         self.dialog2.dismiss(force=True)
+
+    def get_food_info(self):
+
+        carb_label = self.root.ids['food_search_screen'].ids['carb_label']
+        prot_label = self.root.ids['food_search_screen'].ids['prot_label']
+        fat_label = self.root.ids['food_search_screen'].ids['fat_label']
+        calories_label = self.root.ids['food_search_screen'].ids['calories_label']
+        food_input = self.root.ids['food_search_screen'].ids['food_search'].text
+        food_img = self.root.ids['food_search_screen'].ids['food_img']
+
+        self.get_food = requests.get('https://api.edamam.com/api/food-database/v2/parser?ingr={0}%20&app_id=c649c398&app_key=9d0b2632cb6aff689dffad7080d73fb9'.format(food_input))
+        self.food_data = json.loads(self.get_food.content.decode())
+
+        try:
+            if food_input == "":
+                self.root.ids['food_search_screen'].ids['food_error_label'].text = "Please enter a food item to search"
+                self.root.ids['food_search_screen'].ids['carb_label'].text = ""
+                self.root.ids['food_search_screen'].ids['prot_label'].text = ""
+                self.root.ids['food_search_screen'].ids['fat_label'].text = ""
+                self.root.ids['food_search_screen'].ids['calories_label'].text = ""
+                self.root.ids['food_search_screen'].ids['food_search'].text = ""
+                self.root.ids['food_search_screen'].ids['food_img'].source = ""
+            else:
+                self.get_food = requests.get('https://api.edamam.com/api/food-database/v2/parser?ingr={0}%20&app_id=c649c398&app_key=9d0b2632cb6aff689dffad7080d73fb9'.format(food_input))
+                self.food_data = json.loads(self.get_food.content.decode())
+
+                print(self.food_data['parsed'][0]['food']['label'])
+
+                calories_label.text = "Calories:      " + str(self.food_data['parsed'][0]['food']['nutrients']['ENERC_KCAL']) + " Kcals"
+                carb_label.text = "Carbohydrates:     " + str(self.food_data['parsed'][0]['food']['nutrients']['CHOCDF']) + " G"
+                prot_label.text = "Protein:         " + str(self.food_data['parsed'][0]['food']['nutrients']['PROCNT']) + " G"
+                fat_label.text = "Fat:         " + str(self.food_data['parsed'][0]['food']['nutrients']['FAT']) + " G"
+                food_img.source = str(self.food_data['parsed'][0]['food']['image'])
+
+                #print(str(food_data['parsed'][0]['food']['image']))
+                self.root.ids['food_search_screen'].ids['food_search'].text = ""
+                self.root.ids['food_search_screen'].ids['food_error_label'].text = ""
+        except:
+            self.root.ids['food_search_screen'].ids['food_error_label'].text = "Unable to get information of food item"
+            self.root.ids['food_search_screen'].ids['carb_label'].text = ""
+            self.root.ids['food_search_screen'].ids['prot_label'].text = ""
+            self.root.ids['food_search_screen'].ids['fat_label'].text = ""
+            self.root.ids['food_search_screen'].ids['calories_label'].text = ""
+            self.root.ids['food_search_screen'].ids['food_search'].text = ""
+            self.root.ids['food_search_screen'].ids['food_img'].source = ""
 
 SmartFit().run()

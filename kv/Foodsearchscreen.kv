@@ -1,0 +1,88 @@
+<Foodsearchscreen>:
+    FloatLayout:
+        #Icons for 'Menu' & 'Settings'
+        AnchorLayout: #For 'settings' & 'menu' icons
+            anchor_x: 'center'
+            anchor_y: 'top'
+            orientation: 'vertical'
+            MDToolbar:
+                title: 'SmartFit'
+                left_action_items: [["menu", lambda x: app.nav_drawer()]]
+                elevation: 8
+
+            MDBottomAppBar:
+                MDToolbar:
+                    left_action_items: [["magnify", lambda x: app.change_screen("food_search_screen")], ["weight-lifter", lambda x: app.change_screen("log_screen")]]
+                    right_action_items: [["account-group", lambda x: app.change_screen("social_screen")], ["account", lambda x: app.change_screen("profile_screen")] ]
+                    type: 'bottom'
+                    icon: 'home'
+                    on_action_button: app.change_screen("home_screen")
+
+        FloatLayout:
+            MDTextFieldRound:
+                size_hint: .6, .1
+                pos_hint:{"top": .8, "right": .8}
+                id: food_search
+                hint_text: "Search for food"
+                icon_right: "magnify"
+                color_active: 1, 0, 0, 1
+                font_name: "Alphakind"
+
+            Label:
+                size_hint: .8, .1
+                pos_hint:{"top": .65, "right": .9}
+                id: carb_label
+                font_name: "Alphakind"
+                text: "Carb: "
+                color: 0,0,0
+            Label:
+                size_hint: .8, .1
+                pos_hint:{"top": .6, "right": .9}
+                id: prot_label
+                font_name: "Alphakind"
+                text: "Protein: "
+                color: 0,0,0
+
+            Label:
+                size_hint: .8, .1
+                pos_hint:{"top": .55, "right": .9}
+                id: fat_label
+                font_name: "Alphakind"
+                text: "Fat: "
+                color: 0,0,0
+
+            Label:
+                size_hint: .8, .1
+                pos_hint:{"top": .5, "right": .9}
+                id: calories_label
+                font_name: "Alphakind"
+                text: "Calories: "
+                color: 0,0,0
+
+            AsyncImage:
+                size_hint: 1, .2
+                pos_hint:{"top": .4, "right": 1}
+                id: food_img
+                source:
+
+
+            Label:
+                size_hint: .8, .2
+                pos_hint:{"top": .95, "right": .9}
+                font_name: "Alphakind"
+                text: "Search for nutritional information of food"
+                color: 0,0,0
+
+            Label:
+                size_hint: .8, .2
+                pos_hint:{"top": .3, "right": .9}
+                font_name: "Alphakind"
+                text: ""
+                color: 123,0,0
+                id: food_error_label
+
+            ImageButton:
+                source: "icons/next.png"
+                size_hint: .4, .1
+                pos_hint:{"top": .8, "right": 1}
+                on_release: app.get_food_info()
