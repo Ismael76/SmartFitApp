@@ -27,8 +27,6 @@ from kivymd.uix.dialog import MDDialog
 from kivy.network.urlrequest import UrlRequest
 import certifi
 
-LabelBase.register(name="Alphakind", fn_regular="Alphakind.ttf")
-
 class HomeScreen(Screen):
     pass
 
@@ -85,6 +83,7 @@ class SmartFit(MDApp):
     workout_icon_widget = ""
     refresh_file = "refresh_token.txt"
     previous_workout_icon_widget = None
+    LabelBase.register(name="Alphakind", fn_regular="Alphakind.ttf")
 
     def build(self):
         self.authentication = Authentication()
