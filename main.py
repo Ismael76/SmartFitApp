@@ -27,7 +27,6 @@ from kivy.network.urlrequest import UrlRequest
 import certifi
 
 LabelBase.register(name="Alphakind", fn_regular="Alphakind.ttf")
-Window.size = (350, 600) #Remove This Line When App Is Complete
 
 class HomeScreen(Screen):
     pass
