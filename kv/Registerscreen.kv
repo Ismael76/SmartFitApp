@@ -2,7 +2,7 @@
     FloatLayout:
         canvas:
             Color:
-                rgb: utils.get_color_from_hex("#FF8C00")
+                rgb: utils.get_color_from_hex("#e3e3e3")
             Rectangle:
                 size: self.size
                 pos: self.pos
@@ -18,84 +18,95 @@
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .8, "right": .78}
-            MDTextFieldRound:
+            width: '300dp'
+            pos_hint:{"top": .8, "right": .88}
+            MDTextField:
+                color_mode: 'custom'
                 id: register_email
-                hint_text: "Enter email"
+                hint_text: "Enter Email"
                 icon_right: "email"
-                color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
+                line_color_focus: 0, 0, 0, 1
+                mode: "rectangle"
 
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .7, "right": .78}
-            MDTextFieldRound:
+            width: '300dp'
+            pos_hint:{"top": .7, "right": .88}
+            MDTextField:
+                color_mode: 'custom'
                 id: register_password
-                hint_text: "Enter password"
+                hint_text: "Enter Password"
                 icon_right: "key-variant"
-                color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
+                line_color_focus: 0, 0, 0, 1
+                mode: "rectangle"
 
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .6, "right": .78}
-            MDTextFieldRound:
+            width: '300dp'
+            pos_hint:{"top": .6, "right": .88}
+            MDTextField:
+                color_mode: 'custom'
                 id: register_name
-                hint_text: "Enter name"
+                hint_text: "Enter Name"
                 icon_right: "account"
-                color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
+                line_color_focus: 0, 0, 0, 1
+                mode: "rectangle"
 
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .5, "right": .78}
-            MDTextFieldRound:
+            width: '300dp'
+            pos_hint:{"top": .5, "right": .88}
+            MDTextField:
+                color_mode: 'custom'
                 id: register_weight
-                hint_text: "Enter weight (in kg)"
+                hint_text: "Enter Weight (KG)"
                 input_filter: 'float'
                 icon_right: "weight-kilogram"
-                color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
+                line_color_focus: 0, 0, 0, 1
+                mode: "rectangle"
 
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .4, "right": .78}
-            MDTextFieldRound:
+            width: '300dp'
+            pos_hint:{"top": .4, "right": .88}
+            MDTextField:
+                color_mode: 'custom'
                 id: register_height
-                hint_text: "Enter height (in cm)"
+                hint_text: "Enter Height (CM)"
                 input_filter: 'float'
                 icon_right: "human-male-height"
-                color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
+                line_color_focus: 0, 0, 0, 1
+                mode: "rectangle"
 
         GridLayout:
             rows: 1
-            size_hint: 1, .1
+            size_hint: .75, .1
             width: '200dp'
-            pos_hint:{"top": .2, "right": 1}
-            Label:
+            pos_hint:{"top": .15, "right": 1}
+            MDLabel:
                 id: error_label
                 text: ""
-                color: 123, 0, 0
+                color: 1, 0, 0, 1
                 font_name: "Alphakind"
 
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .3, "right": .94}
-            MDRectangleFlatButton:
-                text: "Register"
-                md_bg_color: 0, 0, 0, 1
+            width: '340dp'
+            pos_hint:{"top": .25, "right": .9}
+            MDFlatButton:
+                increment_width: '250dp'
+                text: "CREATE ACCOUNT"
+                md_bg_color: 1, 0, 0, 1
                 font_name: "Alphakind"
                 on_release:
                     app.authentication.register(register_email.text, register_password.text, register_name.text, register_weight.text, register_height.text)

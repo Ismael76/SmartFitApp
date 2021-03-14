@@ -2,7 +2,7 @@
     FloatLayout:
         canvas:
             Color:
-                rgb: utils.get_color_from_hex("#FF8C00")
+                rgb: utils.get_color_from_hex("#e3e3e3")
             Rectangle:
                 size: self.size
                 pos: self.pos
@@ -17,72 +17,72 @@
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .55, "right": .78}
-            MDTextFieldRound:
-                hint_text: "Enter email"
+            width: '300dp'
+            pos_hint:{"top": .55, "right": .88}
+            MDTextField:
+                color_mode: 'custom'
+                hint_text: "Enter Email"
                 icon_right: "account"
-                color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
                 id: user_email
+                mode: "rectangle"
+                line_color_focus: 0, 0, 0, 1
 
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .47, "right": .78}
-            MDTextFieldRound:
-                hint_text: "Enter password"
+            width: '300dp'
+            pos_hint:{"top": .47, "right": .88}
+            MDTextField:
+                color_mode: 'custom'
+                hint_text: "Enter Password"
                 password: True
                 icon_right: "key-variant"
-                color_active: 1, 0, 0, 1
                 font_name: "Alphakind"
                 id: user_password
+                mode: "rectangle"
+                line_color_focus: 0, 0, 0, 1
 
         GridLayout:
             rows: 1
             size_hint_x: None
-            width: '200dp'
-            pos_hint:{"top": .38, "right": .94}
-            MDRectangleFlatButton:
-                text: "Login"
-                md_bg_color: 0, 0, 0, 1
+            width: '330dp'
+            pos_hint:{"top": .35, "right": .9}
+            MDFlatButton:
+                increment_width: '290dp'
+                text: "SIGN IN"
+                md_bg_color: 1, 0, 0, 1
                 font_name: "Alphakind"
+                color: 1, 1, 1, 1
                 on_release: app.authentication.login(user_email.text, user_password.text)
 
         GridLayout:
             rows: 1
-            size_hint: 1, .1
+            size_hint: .85, .1
             pos_hint:{"top": .3, "right": 1}
-            Label:
+            MDLabel:
                 font_name: "Alphakind"
                 text: "Don't already have an account?"
-                color: 0,0,0
+                color: 0, 0, 0, 1
 
         GridLayout:
             rows: 1
-            size_hint: 1, .1
-            pos_hint:{"top": .2, "right": 1}
-            LabelButton:
-                canvas.before:
-                    Color:
-                        rgb: utils.get_color_from_hex("#FF8C00") if self.state == 'normal' else utils.get_color_from_hex("FFD42D")
-                    RoundedRectangle:
-                        size: self.size
-                        pos: self.pos
+            size_hint_x: None
+            width: '330dp'
+            pos_hint:{"top": .2, "right": .9}
+            MDFlatButton:
+                increment_width: '290dp'
+                text: "SIGN UP"
+                md_bg_color: 1, 0, 0, 1
                 font_name: "Alphakind"
-                text: "Sign Up"
-                color: 0,0,0
-                underline: True
-                on_press: app.change_screen("register_screen")
+                on_release: app.change_screen("register_screen")
 
         GridLayout:
             rows: 1
-            size_hint: 1, .1
-            width: '200dp'
-            pos_hint:{"top": .1, "right": 1}
-            Label:
+            size_hint: .55, .1
+            pos_hint:{"top": .1, "right": .9}
+            MDLabel:
                 id: error_label
                 text: ""
-                color: 123, 0, 0
+                color: 1, 0, 0, 1
                 font_name: "Alphakind"

@@ -3,7 +3,18 @@
   <component name="ChangeListManager">
     <list default="true" id="befbbff0-a6bf-474c-8835-fb35190250ac" name="Default Changelist" comment="">
       <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/firebaseauthentication.py" beforeDir="false" afterPath="$PROJECT_DIR$/firebaseauthentication.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Adduserscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Adduserscreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Badgescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Badgescreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Changeavatarscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Changeavatarscreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Foodsearchscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Foodsearchscreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Friendscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Friendscreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Homescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Homescreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Loginscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Loginscreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Logscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Logscreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Profilescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Profilescreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Registerscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Registerscreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Socialscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Socialscreen.kv" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kv/Workoutscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Workoutscreen.kv" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
@@ -46,7 +57,49 @@
     <property name="restartRequiresConfirmation" value="false" />
     <property name="settings.editor.selected.configurable" value="com.jetbrains.python.configuration.PyActiveSdkModuleConfigurable" />
   </component>
-  <component name="RunManager">
+  <component name="RunManager" selected="Python.main">
+    <configuration name="Icon" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SmartFitApp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Icon.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="Test" type="PythonConfigurationType" factoryName="Python" temporary="true" nameIsGenerated="true">
+      <module name="SmartFitApp" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="true" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/Test.py" />
+      <option name="PARAMETERS" value="" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
     <configuration name="main" type="PythonConfigurationType" factoryName="Python" nameIsGenerated="true">
       <module name="SmartFitApp" />
       <option name="INTERPRETER_OPTIONS" value="" />
@@ -68,6 +121,12 @@
       <option name="INPUT_FILE" value="" />
       <method v="2" />
     </configuration>
+    <recent_temporary>
+      <list>
+        <item itemvalue="Python.Test" />
+        <item itemvalue="Python.Icon" />
+      </list>
+    </recent_temporary>
   </component>
   <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
   <component name="TaskManager">

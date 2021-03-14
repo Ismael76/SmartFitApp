@@ -24,7 +24,7 @@
             text: "Select Workout Image"
             size_hint: 1, .05
             pos_hint: {"top": .9, "right": 1}
-            color: 0,0,0
+            color: 0, 0, 0, 1
             font_name: "Alphakind"
 
         ScrollView:
@@ -60,23 +60,23 @@
             ImageButton:
                 source: "icons/clock.png"
                 on_release:
-                    time_label.color = 0, 1, 0
-                    distance_label.color = 0, 0, 0
-                    repetitions_label.color = 0, 0, 0
+                    time_label.color = 0, 1, 0, 1
+                    distance_label.color = 0, 0, 0, 1
+                    repetitions_label.color = 0, 0, 0, 1
                     app.choice = self.source
             ImageButton:
                 source: "icons/distance.png"
                 on_release:
-                    distance_label.color = 0, 1, 0
-                    repetitions_label.color = 0, 0, 0
-                    time_label.color = 0, 0, 0
+                    distance_label.color = 0, 1, 0, 1
+                    repetitions_label.color = 0, 0, 0, 1
+                    time_label.color = 0, 0, 0, 1
                     app.choice = self.source
             ImageButton:
                 source: "icons/repetitions.png"
                 on_release:
-                    repetitions_label.color = 0, 1, 0
-                    time_label.color = 0, 0, 0
-                    distance_label.color = 0, 0, 0
+                    repetitions_label.color = 0, 1, 0, 1
+                    time_label.color = 0, 0, 0, 1
+                    distance_label.color = 0, 0, 0, 1
                     app.choice = self.source
 
         GridLayout:
@@ -84,17 +84,17 @@
             size_hint: 1, .05
             pos_hint: {"top": .5, "right": 1}
             LabelButton:
-                color: 0,0,0
+                color: 0, 0, 0, 1
                 font_name: "Alphakind"
                 text: "Time"
                 id: time_label
             LabelButton:
-                color: 0,0,0
+                color: 0, 0, 0, 1
                 font_name: "Alphakind"
                 text: "Distance"
                 id: distance_label
             LabelButton:
-                color: 0,0,0
+                color: 0, 0, 0, 1
                 font_name: "Alphakind"
                 text: "Repetitions"
                 id: repetitions_label
@@ -160,7 +160,7 @@
             text: "Log Workout"
             underline: True
             font_name: "Alphakind"
-            color: 0,0,1
+            color: 0, 0, 1, 1
             size_hint: .35, .07
             pos_hint: {"top": .2, "right": 1}
             on_release:
@@ -170,13 +170,13 @@
             size_hint: 1, .1
             pos_hint: {"top": .25, "right": .65}
             id: check_box
-            color: 0,0,0
+            color: 0, 0, 0, 1
             active: False
 
         Label:
             size_hint: 1, .1
             pos_hint: {"top": .25, "right": .8}
             font_name: "Alphakind"
-            color: 0,0,0
+            color: 0, 0, 0, 1
             text: "Edit Date"
 

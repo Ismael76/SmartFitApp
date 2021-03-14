@@ -27,6 +27,8 @@ from kivymd.uix.dialog import MDDialog
 from kivy.network.urlrequest import UrlRequest
 import certifi
 
+Window.size = (400, 700)
+
 class HomeScreen(Screen):
     pass
 
@@ -110,7 +112,6 @@ class SmartFit(MDApp):
 
         self.root.ids["social_screen"].ids["no_friend_label"].text = "You currently do not have any friends"
         self.root.ids['log_screen'].ids['no_activity_label'].text = "You do not have logged activities"
-
         #Populate the day, month & year inputs in the 'add workout' screen
         current_date = datetime.now()
         day = current_date.day
@@ -169,16 +170,16 @@ class SmartFit(MDApp):
             bmi_label.text = str(round((float(data['Weight']) / float(data['Height']) / float(data['Height']))*10000))
 
             if int(bmi_label.text) >= 18 and int(bmi_label.text) <= 25:
-                bmi_label.color = 0, 100, 0
+                bmi_label.color = 0, 100, 0, 1
 
             elif int(bmi_label.text) < 18:
-                bmi_label.color = 1, 0.9, 0
+                bmi_label.color = 1, 0.9, 0, 1
 
             elif int(bmi_label.text) >= 26 and int(bmi_label.text) <= 30:
-                bmi_label.color = 1, 0.6, 0
+                bmi_label.color = 1, 0.6, 0, 1
 
             elif int(bmi_label.text) > 30:
-                bmi_label.color = 1, 0, 0
+                bmi_label.color = 1, 0, 0, 1
                 #Note: To get RGB colours above we get the three rgb colour values from rapidtables.com then we divide each one by 255
 
 
@@ -276,9 +277,9 @@ class SmartFit(MDApp):
         self.root.ids['workout_screen'].ids['amount_input'].text = ""
         self.root.ids['workout_screen'].ids['units_input'].text = ""
         self.root.ids['workout_screen'].ids['calories_input'].text = ""
-        self.root.ids['workout_screen'].ids['repetitions_label'].color = 0, 0, 0
-        self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0
-        self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0
+        self.root.ids['workout_screen'].ids['repetitions_label'].color = 0, 0, 0, 1
+        self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0, 1
+        self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0, 1
         self.root.ids['login_screen'].ids['user_email'].text = ""
         self.root.ids['login_screen'].ids['user_password'].text = ""
         self.root.ids['register_screen'].ids['register_email'].text = ""
@@ -341,9 +342,9 @@ class SmartFit(MDApp):
         self.root.ids['workout_screen'].ids['amount_input'].text = ""
         self.root.ids['workout_screen'].ids['units_input'].text = ""
         self.root.ids['workout_screen'].ids['calories_input'].text = ""
-        self.root.ids['workout_screen'].ids['repetitions_label'].color = 0,0,0
-        self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0
-        self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0
+        self.root.ids['workout_screen'].ids['repetitions_label'].color = 0, 0, 0, 1
+        self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0, 1
+        self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0, 1
         self.root.ids['login_screen'].ids['user_email'].text = ""
         self.root.ids['login_screen'].ids['user_password'].text = ""
         self.root.ids['login_screen'].ids['error_label'].text = ""
@@ -463,30 +464,30 @@ class SmartFit(MDApp):
             pass
             return
         if self.choice == None:
-            workout_screen.ids["time_label"].color = 123, 0, 0
-            workout_screen.ids["distance_label"].color = 123, 0, 0
-            workout_screen.ids["repetitions_label"].color = 123, 0, 0
+            workout_screen.ids["time_label"].color = 1, 0, 0, 1
+            workout_screen.ids["distance_label"].color = 1, 0, 0, 1
+            workout_screen.ids["repetitions_label"].color = 1, 0, 0, 1
             return
         if workout_description == "":
-            workout_screen.ids["workout_description"].background_color = 123, 0, 0
+            workout_screen.ids["workout_description"].background_color = 1, 0, 0, 1
             return
         if workout_amount == "":
-            workout_screen.ids["amount_input"].background_color = 123, 0, 0
+            workout_screen.ids["amount_input"].background_color = 1, 0, 0, 1
             return
         if workout_unit == "":
-            workout_screen.ids["units_input"].background_color = 123, 0, 0
+            workout_screen.ids["units_input"].background_color = 1, 0, 0, 1
             return
         if workout_calories_burnt == "":
-            workout_screen.ids["calories_input"].background_color = 123, 0, 0
+            workout_screen.ids["calories_input"].background_color = 1, 0, 0, 1
             return
         if workout_day_date == "":
-            workout_screen.ids["day_input"].background_color = 123, 0, 0
+            workout_screen.ids["day_input"].background_color = 1, 0, 0, 1
             return
         if workout_month_date == "":
-            workout_screen.ids["month_input"].background_color = 123, 0, 0
+            workout_screen.ids["month_input"].background_color = 1, 0, 0, 1
             return
         if workout_year_date == "":
-            workout_screen.ids["year_input"].background_color = 123, 0, 0
+            workout_screen.ids["year_input"].background_color = 1, 0, 0, 1
             return
 
         #If fields are ok update the DB
@@ -556,9 +557,9 @@ class SmartFit(MDApp):
         self.root.ids['workout_screen'].ids['amount_input'].text = ""
         self.root.ids['workout_screen'].ids['units_input'].text = ""
         self.root.ids['workout_screen'].ids['calories_input'].text = ""
-        self.root.ids['workout_screen'].ids['repetitions_label'].color = 0, 0, 0
-        self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0
-        self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0
+        self.root.ids['workout_screen'].ids['repetitions_label'].color = 0, 0, 0, 1
+        self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0, 1
+        self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0, 1
 
 
     #Increases the level of the user when they level up
