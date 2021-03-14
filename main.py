@@ -18,6 +18,7 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton, MDFlatButton
 from os import walk
 import kivy.utils
+import os
 from kivy.app import App
 from functools import partial
 import requests
@@ -26,6 +27,8 @@ from friendlist import FriendList
 from kivymd.uix.dialog import MDDialog
 from kivy.network.urlrequest import UrlRequest
 import certifi
+
+os.environ['SSL_CERT_FILE'] = certifi.where()
 
 class HomeScreen(Screen):
     pass
