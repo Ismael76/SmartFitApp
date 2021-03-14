@@ -226,7 +226,6 @@ class SmartFit(MDApp):
                                       Unit_Image=workout['Unit_Image'], Amount=workout['Amount'], Units=workout['Units'],
                                       Likes=workout['Likes'], Date=workout['Date'])
                     banner.add_widget(W)
-
             #Populate users badge collection
             badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
             self.badges = data['Badges']

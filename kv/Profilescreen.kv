@@ -13,7 +13,7 @@
 
             MDBottomAppBar:
                 MDToolbar:
-                    left_action_items: [["magnify", lambda x: app.change_screen("food_search_screen")], ["weight-lifter", lambda x: app.change_screen("log_screen")]]
+                    left_action_items: [["magnify", lambda x: app.change_screen("food_search_screen")], ["yoga", lambda x: app.change_screen("log_screen")]]
                     right_action_items: [["account-group", lambda x: app.change_screen("social_screen")], ["account", lambda x: app.change_screen("profile_screen")] ]
                     type: 'bottom'
                     icon: 'home'
@@ -21,7 +21,7 @@
 
         Label:
             id: user_id_label
-            size_hint: 1, .1
+            size_hint: .6, .1
             pos_hint:{"top": .9, "right": 1}
             color: 0, 0, 0, 1
             text: "User ID: "
@@ -29,7 +29,7 @@
 
         Label:
             id: level_label
-            size_hint: 1, .1
+            size_hint: .6, .1
             pos_hint:{"top": .84, "right": 1}
             color: 0, 0, 0, 1
             text: ""
@@ -37,7 +37,7 @@
 
         Label:
             id: name_label
-            size_hint: 1, .1
+            size_hint: .6, .1
             spacing: 50, 50
             pos_hint:{"top": .77, "right": 1}
             color: 0, 0, 0, 1
@@ -45,34 +45,34 @@
             font_name: "Alphakind"
 
         Image:
-            pos_hint:{"top": .87, "right": .7}
+            pos_hint:{"top": .87, "right": .8}
             size_hint: 1, .2
             source: "icons/avatars/002-man.png"
             id: avatar_image
 
         ImageButton:
             size_hint: 1, .07
-            pos_hint: {"top": .6, "right": .7}
+            pos_hint: {"top": .6, "right": .8}
             source: "icons/avatars/002-man.png"
             on_release:
                 print("Change Avatar")
 
         ImageButton:
             size_hint: 1, .07
-            pos_hint: {"top": .5, "right": .7}
+            pos_hint: {"top": .5, "right": .8}
             source: "icons/medal.png"
             on_release:
                 app.change_screen("badge_screen")
 
         ImageButton:
             size_hint: 1, .07
-            pos_hint: {"top": .4, "right": .7}
+            pos_hint: {"top": .4, "right": .8}
             source: "icons/follow.png"
             on_release:
                 app.change_screen("add_user_screen")
 
         LabelButton:
-            size_hint: 1, .07
+            size_hint: .9, .07
             pos_hint: {"top": .6, "right": 1}
             text: "Update Avatar"
             color: 0, 0, 0, 1
@@ -81,7 +81,7 @@
                 app.change_screen("change_avatar_screen")
 
         LabelButton:
-            size_hint: 1, .07
+            size_hint: .9, .07
             pos_hint: {"top": .5, "right": 1}
             text: "View Badges"
             color: 0, 0, 0, 1
@@ -89,7 +89,7 @@
             on_release: app.change_screen("badge_screen")
 
         LabelButton:
-            size_hint: 1, .07
+            size_hint: .9, .07
             pos_hint: {"top": .4, "right": 1}
             text: "Add Friend"
             color: 0, 0, 0, 1
