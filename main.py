@@ -27,8 +27,6 @@ from kivymd.uix.dialog import MDDialog
 from kivy.network.urlrequest import UrlRequest
 import certifi
 
-Window.size = (400, 700)
-
 class HomeScreen(Screen):
     pass
 

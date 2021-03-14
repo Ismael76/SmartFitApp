@@ -1,22 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project version="4">
   <component name="ChangeListManager">
-    <list default="true" id="befbbff0-a6bf-474c-8835-fb35190250ac" name="Default Changelist" comment="">
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Adduserscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Adduserscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Badgescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Badgescreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Changeavatarscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Changeavatarscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Foodsearchscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Foodsearchscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Friendscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Friendscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Homescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Homescreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Loginscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Loginscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Logscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Logscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Profilescreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Profilescreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Registerscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Registerscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Socialscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Socialscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kv/Workoutscreen.kv" beforeDir="false" afterPath="$PROJECT_DIR$/kv/Workoutscreen.kv" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
-    </list>
+    <list default="true" id="befbbff0-a6bf-474c-8835-fb35190250ac" name="Default Changelist" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
