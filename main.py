@@ -221,7 +221,7 @@ class SmartFit(MDApp):
                 self.root.ids['log_screen'].ids['no_activity_label'].text = ""
                 workout_keys = list(workouts.keys())
                 #Sort workouts in order of date
-                workout_keys.sort(key=lambda value: datetime.strptime(workouts[value]['Date'], "%m/%d/%Y"))
+                workout_keys.sort(key=lambda value: datetime.strptime(workouts[value]['Date'], "%d/%m/%Y"))
                 workout_keys = workout_keys[::-1]
                 for workout_key in workout_keys:
                     workout = workouts[workout_key]
@@ -229,6 +229,7 @@ class SmartFit(MDApp):
                                       Unit_Image=workout['Unit_Image'], Amount=workout['Amount'], Units=workout['Units'],
                                       Likes=workout['Likes'], Date=workout['Date'])
                     banner.add_widget(W)
+
             #Populate users badge collection
             badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
             self.badges = data['Badges']
@@ -427,7 +428,7 @@ class SmartFit(MDApp):
             return
 
         workout_keys = list(workouts.keys())
-        workout_keys.sort(key=lambda value: datetime.strptime(workouts[value]['Date'], "%m/%d/%Y"))
+        workout_keys.sort(key=lambda value: datetime.strptime(workouts[value]['Date'], "%d/%m/%Y"))
         workout_keys = workout_keys[::-1]
         self.root.ids['friend_screen'].ids['no_friend_activity_label'].text = ""
         for key in workout_keys:
