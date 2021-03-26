@@ -31,8 +31,18 @@ class Authentication():
         email = main_app.root.ids["register_screen"].ids["register_email"]
         self.email_text = email.text
 
+        self.gender_value = 0
 
-        if self.weight_text == "" or self.name_text == "" or self.height_text == "" :
+        gender_male = main_app.root.ids["register_screen"].ids["gender_male"].active
+        if gender_male == True:
+            self.gender_value = 1
+
+        gender_female = main_app.root.ids["register_screen"].ids["gender_female"].active
+        if gender_female == True:
+            self.gender_value = 2
+
+
+        if self.weight_text == "" or self.name_text == "" or self.height_text == "" or gender_male == False and gender_female == False:
             App.get_running_app().root.ids['register_screen'].ids['error_label'].text = "Please fill in all the fields"
             #Firebase checks if email & password are correct
         else:
@@ -62,12 +72,22 @@ class Authentication():
                 friend_patch_req = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/.json?auth=" + idToken, data=friend_patch_data)
 
                 #Create user with a localID & default information
-                the_data = {"Avatar": "002-man.png", "Friends": "", "Workouts": "", "Level": "1", "Name": self.name_text, "Email": self.email_text, "User_Id": User_Id, "Weight": self.weight_text, "Height": self.height_text, "Xp": 5, "Badges": ""}
+                the_data = {"Avatar": "002-man.png", "Friends": "", "Workouts": "", "Level": "1", "Name": self.name_text, "Email": self.email_text, "User_Id": User_Id, "Weight": self.weight_text, "Height": self.height_text, "Xp": 5, "Badges": "", "Gender": self.gender_value, "Max": 100}
                 requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + localId + ".json?auth=" + idToken,
                                data=json.dumps(the_data))
 
+                the_data2 = {"Avatar": "002-man.png", "Name": self.name_text, "User_Id": User_Id, "Points": 0}
+                requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/" + localId + ".json?auth=" + idToken,
+                               data=json.dumps(the_data2))
+
                 App.get_running_app().on_start()
                 App.get_running_app().change_screen("home_screen")
+                close_button = MDFlatButton(text="CLOSE", on_release=self.close_dialog,
+                                             text_color=(0.89,.57,0,1))
+                self.dialog = MDDialog(title="[font=Alphakind.ttf]Welcome[/font]",
+                                       text="[font=Alphakind.ttf]Welcome to SmartFit! Add workouts to begin earning experience![/font]", size_hint=(0.7, 1),
+                                       buttons=[close_button], )
+                self.dialog.open()
 
     #Authenticate users when they try to log onto the app
     def login(self, email, password):

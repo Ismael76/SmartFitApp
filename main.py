@@ -1,3 +1,5 @@
+from kivy.uix.floatlayout import FloatLayout
+from kivy.uix.gridlayout import GridLayout
 from kivymd.app import MDApp
 from kivy.lang import Builder
 from kivy.uix.screenmanager import Screen
@@ -18,17 +20,25 @@ from kivymd.uix.textfield import MDTextField
 from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton, MDFlatButton
 from os import walk
 import kivy.utils
+from kivy.uix.popup import Popup
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
 import os
+from kivy.clock import Clock
 from kivy.app import App
 from functools import partial
 import requests
 import json
 from friendlist import FriendList
+from leaderboard import Leaderboard
 from kivymd.uix.dialog import MDDialog
 from kivy.network.urlrequest import UrlRequest
 import certifi
+from plyer import notification
 
 os.environ['SSL_CERT_FILE'] = certifi.where()
+
+Window.size = (400, 700) #Comment This Line Out When Deploying As APK
 
 class HomeScreen(Screen):
     pass
@@ -46,6 +56,9 @@ class RegisterScreen(Screen):
     pass
 
 class FriendScreen(Screen):
+    pass
+
+class LeaderboardScreen(Screen):
     pass
 
 class FoodSearchScreen(Screen):
@@ -73,6 +86,9 @@ class SettingsScreen(Screen):
     pass
 
 class LogScreen(Screen):
+    pass
+
+class P(FloatLayout):
     pass
 
 class Item(OneLineAvatarListItem):
@@ -110,6 +126,10 @@ class SmartFit(MDApp):
             RoundedRectangle(size=self.workout_icon_widget.size, pos=self.workout_icon_widget.pos, radius=[5, ])
 
     def on_start(self):
+        user_data = pd.read_csv('userdata.csv')
+        X = user_data.drop(columns=['Index'])
+        y = user_data['Index']
+        model = DecisionTreeClassifier()
 
         self.root.ids["social_screen"].ids["no_friend_label"].text = "You currently do not have any friends"
         self.root.ids['log_screen'].ids['no_activity_label'].text = "You do not have logged activities"
@@ -118,6 +138,7 @@ class SmartFit(MDApp):
         day = current_date.day
         month = current_date.month
         year = current_date.year
+        self.current_time = current_date.strftime("%S")
         self.root.ids['workout_screen'].ids['day_input'].text = str(day)
         self.root.ids['workout_screen'].ids['month_input'].text = str(month)
         self.root.ids['workout_screen'].ids['year_input'].text = str(year)
@@ -151,6 +172,9 @@ class SmartFit(MDApp):
             result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + local_id + ".json?auth=" + id_token)
             data = json.loads(result.content.decode()) #Decoding the data into 'string' as it comes in binary format initially, then converting it into JSON format
 
+            result2 = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/.json" )
+            data2 = json.loads(result2.content.decode())
+
             #Updates avatar from DB
             avatar_image = self.root.ids['home_screen'].ids['avatar_image']
             avatar_image.source = "icons/avatars/" + data['Avatar']
@@ -166,7 +190,23 @@ class SmartFit(MDApp):
             height_label = self.root.ids['home_screen'].ids['height_label']
             height_label.text = str(data['Height']) + " CM"
 
-            #Calculates the users BMI using their height + weight
+            #Uses ML to predict and categorize a user in a BMI
+            model.fit(X, y)
+            self.predictions = model.predict([[data['Gender'], float(data['Height']), float(data['Weight'])]])
+
+            if self.predictions[0] == 5:
+                Clock.schedule_interval(self.notifications, 14400)
+            elif self.predictions[0] == 4:
+                Clock.schedule_interval(self.notifications, 21600)
+            elif self.predictions[0] == 3:
+                Clock.schedule_interval(self.notifications, 28800)
+            elif self.predictions[0] == 2:
+                Clock.schedule_interval(self.notifications, 43200)
+            elif self.predictions[0] == 1:
+                Clock.schedule_interval(self.notifications, 80000)
+            elif self.predictions[0] == 0:
+                Clock.schedule_interval(self.notifications, 80000)
+
             bmi_label = self.root.ids['home_screen'].ids['bmi_label']
             bmi_label.text = str(round((float(data['Weight']) / float(data['Height']) / float(data['Height']))*10000))
 
@@ -193,10 +233,15 @@ class SmartFit(MDApp):
             self.level = data['Level']
             self.xp = data['Xp']
             self.user_id = data['User_Id']
+            self.max = data['Max']
 
             #Populate users progress bar based on Xp from the DB
+            self.root.ids['home_screen'].ids['progress_bar'].max = self.max
             progress_bar = self.root.ids['home_screen'].ids['progress_bar']
             progress_bar.value = self.xp
+
+            self.xp_label = self.root.ids['home_screen'].ids['xp_label']
+            self.xp_label.text = str(self.xp) + "/" + str(self.max) + " XP"
 
             #Update 'user_id' on 'profile_screen'
             user_id_label = self.root.ids['profile_screen'].ids['user_id_label']
@@ -230,6 +275,29 @@ class SmartFit(MDApp):
                                       Likes=workout['Likes'], Date=workout['Date'])
                     banner.add_widget(W)
 
+            leaderboard_grid = self.root.ids['leaderboard_screen'].ids['leaderboard_grid']
+            #Remove widgets from leaderboards screen so it doesn't duplicate widgets
+            for x in leaderboard_grid.walk():
+                if x.__class__ == Leaderboard:
+                    leaderboard_grid.remove_widget(x)
+
+            #Populate Leaderboards screen
+            leaderboard_keys = list(data2)
+            leaderboard_keys.sort(key=lambda value: data2[value]['Points'])
+            leaderboard_keys = leaderboard_keys[::-1]
+            self.pos = 0
+            for leaderboard_key in leaderboard_keys:
+                pos = data2[leaderboard_key]
+                self.pos += 1
+                if self.pos > 3:
+                    leaderboard_banner = Leaderboard(image_pos='icons/grey.png', pos=str(self.pos), avatar=pos['Avatar'],
+                                                     name=str(pos['Name']), points=str(pos['Points']))
+                    self.root.ids['leaderboard_screen'].ids['leaderboard_grid'].add_widget(leaderboard_banner)
+                else:
+                    self.img_pos = "icons/medal %s.png" %self.pos
+                    leaderboard_banner = Leaderboard(image_pos=self.img_pos, pos=str(""), avatar=pos['Avatar'], name=str(pos['Name']), points=str(pos['Points']))
+                    self.root.ids['leaderboard_screen'].ids['leaderboard_grid'].add_widget(leaderboard_banner)
+
             #Populate users badge collection
             badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
             self.badges = data['Badges']
@@ -238,7 +306,9 @@ class SmartFit(MDApp):
                 for badge_key in badge_keys:
                     badge = self.badges[badge_key]
                     img = Image(source=badge['Badges'])
+                    lbl = Label(text="Badge Unlocked", font_name= "Alphakind", color= (0,0,0,1))
                     badge_collection.add_widget(img)
+                    badge_collection.add_widget(lbl)
 
             #Populate friends list on app
             friends_list_array = self.friends_list.split(",")
@@ -252,8 +322,9 @@ class SmartFit(MDApp):
                     data = userdata_request.json()
                     friend_banner = FriendList(friend_id=friend, name=str(list(data.values())[0]['Name']), level=str(list(data.values())[0]['Level']))
                     self.root.ids["social_screen"].ids["friends_list_grid"].add_widget(friend_banner)
-            self.change_screen("home_screen")
 
+
+            self.change_screen("home_screen")
         except Exception as e:
             pass
 
@@ -325,9 +396,11 @@ class SmartFit(MDApp):
 
         #Patch request to update data (Avatar Image) in DB
         the_data = '{"Avatar": "%s"}' % image
+        the_data2 = '{"Avatar": "%s"}' % image
         requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json",
                        data=the_data)
-
+        requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/" + self.local_id + ".json",
+                       data=the_data2)
         self.change_screen("profile_screen")
 
     def change_screen(self, screen_name):
@@ -377,14 +450,13 @@ class SmartFit(MDApp):
         user_id = user_id.replace("\n", "")
         check_request = requests.get('https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/.json?orderBy="User_Id"&equalTo=' + user_id)
         data = check_request.json()
-
         try:
             int_user_id = int(user_id)
         except:
             # Friend id had some letters in it when it should just be a number
             self.root.ids['add_user_screen'].ids['add_friend_label'].text = "Please enter a valid user id"
             return
-        if user_id == self.user_id:
+        if user_id == str(self.user_id):
             self.root.ids['add_user_screen'].ids['add_friend_label'].text = "You can't add yourself as a friend"
             return
         if user_id in self.friends_list:
@@ -445,8 +517,12 @@ class SmartFit(MDApp):
         result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json?auth=" + self.id_token)
         data = json.loads(result.content.decode())
 
+        result2 = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/" + self.local_id + ".json?auth=" + self.id_token)
+        data2 = json.loads(result2.content.decode())
+
         self.level = data['Level']
         self.xp = data['Xp']
+        self.points = data2['Points']
 
         #Gets user data (Entries in log screen)
         workout_screen = self.root.ids["workout_screen"]
@@ -505,50 +581,62 @@ class SmartFit(MDApp):
                           Likes="0", Date=workout_day_date + "/" + workout_month_date + "/" + workout_year_date)
         banner.add_widget(W, index=len(banner.children))
 
-
         self.change_screen("home_screen")
 
         #Based off how many calories a user burns they gain the relevant xp
         if int(workout_calories_burnt) == 0:
             self.xp_earnt = 0
+            self.points +=5
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
         elif int(workout_calories_burnt) > 100 and int(workout_calories_burnt) < 300:
             self.xp_earnt = 5
+            self.points += 10
             #Add xp to progress bar
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
         elif int(workout_calories_burnt) > 300 and int(workout_calories_burnt) < 700:
             self.xp_earnt = 10
+            self.points += 15
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
         elif int(workout_calories_burnt) > 700 and int(workout_calories_burnt) < 1000:
             self.xp_earnt = 20
+            self.points += 20
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
         elif int(workout_calories_burnt) > 1000 and int(workout_calories_burnt) < 2000:
             self.xp_earnt = 30
+            self.points += 25
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
         elif int(workout_calories_burnt) > 2000:
             self.xp_earnt = 40
+            self.points += 30
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
 
         #Sends xp to DB
-        patch_xp = '{"Xp": %s}' % (self.xp + int(self.xp_earnt))
+        patch_xp = '{"Xp": %s}' % ((self.xp + int(self.xp_earnt)))
+
+        patch_points = '{"Points": %s}' % (self.points)
 
         #Updates the DB with new XP
         self.update_xp_request = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s.json?auth=%s" % (self.local_id, self.id_token), data=patch_xp)
 
+        self.update_points_request = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/%s.json?auth=%s" % (self.local_id, self.id_token), data=patch_points)
+
+        self.xp_label = self.root.ids['home_screen'].ids['xp_label']
+        self.xp_label.text = str((self.xp + int(self.xp_earnt))) + "/" + str(data['Max']) + " XP"
 
         close_button = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
         self.dialog = MDDialog(title="[font=Alphakind.ttf]Workout Logged[/font]",
                                text="[font=Alphakind.ttf]You have logged a workout and have earnt %s xp[/font]" % (self.xp_earnt), size_hint=(0.7, 1),
                                buttons=[close_button])
+
         self.dialog.open()
 
-        if self.root.ids['home_screen'].ids['progress_bar'].value == 100:
+        if self.root.ids['home_screen'].ids['progress_bar'].value == self.root.ids['home_screen'].ids['progress_bar'].max:
             self.level = int(self.level) + 1
             self.increase_lvl()
 
@@ -562,6 +650,32 @@ class SmartFit(MDApp):
         self.root.ids['workout_screen'].ids['distance_label'].color = 0, 0, 0, 1
         self.root.ids['workout_screen'].ids['time_label'].color = 0, 0, 0, 1
 
+        result3 = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/.json")
+        data3 = json.loads(result3.content.decode())
+
+        leaderboard_grid = self.root.ids['leaderboard_screen'].ids['leaderboard_grid']
+        # Remove widgets from leaderboards screen so it doesn't duplicate widgets
+        for x in leaderboard_grid.walk():
+            if x.__class__ == Leaderboard:
+                leaderboard_grid.remove_widget(x)
+
+        #Populate Leaderboards screen
+        leaderboard_keys = list(data3)
+        leaderboard_keys.sort(key=lambda value: data3[value]['Points'])
+        leaderboard_keys = leaderboard_keys[::-1]
+        self.pos1 = 0
+        for leaderboard_key in leaderboard_keys:
+            pos = data3[leaderboard_key]
+            self.pos1+=1
+            if self.pos1 > 3:
+                leaderboard_banner = Leaderboard(image_pos='icons/grey.png', pos=str(self.pos1), avatar=pos['Avatar'],
+                                                 name=str(pos['Name']), points=str(pos['Points']))
+                self.root.ids['leaderboard_screen'].ids['leaderboard_grid'].add_widget(leaderboard_banner)
+            else:
+                self.img_pos1 = "icons/medal %s.png" % self.pos1
+                leaderboard_banner = Leaderboard(image_pos=self.img_pos1, pos=str(""), avatar=pos['Avatar'],
+                                                 name=str(pos['Name']), points=str(pos['Points']))
+                self.root.ids['leaderboard_screen'].ids['leaderboard_grid'].add_widget(leaderboard_banner)
 
     #Increases the level of the user when they level up
     def increase_lvl(self):
@@ -569,6 +683,14 @@ class SmartFit(MDApp):
 
         result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json?auth=" + self.id_token)
         data = json.loads(result.content.decode())
+
+        #Scales up the progress bar after each level
+        self.new_max = data['Max'] * 1.5
+        self.root.ids['home_screen'].ids['progress_bar'].max = int(self.new_max)
+        patch_max = '{"Max": %s}' % int(self.new_max)
+        self.update_max_request = UrlRequest(
+            "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=patch_max, ca_file=certifi.where(), method='PATCH', )
 
         self.badge = ""
 
@@ -579,6 +701,72 @@ class SmartFit(MDApp):
             self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 2 badge Unlocked[/font]",
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
+            post_badges = {"Badges": self.badge}
+            #Updates DB with new user badge
+            self.update_badge_request = requests.post(
+                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                self.local_id, self.id_token),
+                data=json.dumps(post_badges))
+
+        elif (self.level) == 5:
+            self.badge = "icons/badges/005-award.png"
+            close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 5 badge Unlocked[/font]",
+            source=self.badge), ], buttons=[close_button2])
+            self.dialog2.open()
+            post_badges = {"Badges": self.badge}
+            self.update_badge_request = requests.post(
+                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                self.local_id, self.id_token),
+                data=json.dumps(post_badges))
+
+        elif (self.level) == 10:
+            self.badge = "icons/badges/007-badge.png"
+            close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 10 badge Unlocked[/font]",
+            source=self.badge), ], buttons=[close_button2])
+            self.dialog2.open()
+            post_badges = {"Badges": self.badge}
+            self.update_badge_request = requests.post(
+                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                self.local_id, self.id_token),
+                data=json.dumps(post_badges))
+
+        elif (self.level) == 15:
+            self.badge = "icons/badges/012-trophy.png"
+            close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 15 badge Unlocked[/font]",
+            source=self.badge), ], buttons=[close_button2])
+            self.dialog2.open()
+            post_badges = {"Badges": self.badge}
+            self.update_badge_request = requests.post(
+                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                self.local_id, self.id_token),
+                data=json.dumps(post_badges))
+
+        elif (self.level) == 25:
+            self.badge = "icons/badges/036-award.png"
+            close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 25 badge Unlocked[/font]",
+            source=self.badge), ], buttons=[close_button2])
+            self.dialog2.open()
+            post_badges = {"Badges": self.badge}
+            self.update_badge_request = requests.post(
+                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                self.local_id, self.id_token),
+                data=json.dumps(post_badges))
+
+        elif (self.level) == 50:
+            self.badge = "icons/badges/042-trophy.png"
+            close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 50 badge Unlocked[/font]",
+            source=self.badge), ], buttons=[close_button2])
+            self.dialog2.open()
+            post_badges = {"Badges": self.badge}
+            self.update_badge_request = requests.post(
+                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                self.local_id, self.id_token),
+                data=json.dumps(post_badges))
 
         close_button1 = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
         self.dialog = MDDialog(title="[font=Alphakind.ttf]Level Gain[/font]",
@@ -590,7 +778,6 @@ class SmartFit(MDApp):
         #Updates DB with new user lvl
         patch_lvl = '{"Level": %s}' % (self.level)
         patch_xp = '{"Xp": 0}'
-        post_badges = {"Badges": self.badge}
 
         #Updates the DB with new XP
         self.update_xp_request = UrlRequest(
@@ -602,10 +789,6 @@ class SmartFit(MDApp):
             "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
                 self.local_id, self.id_token), req_body=patch_lvl, ca_file=certifi.where(), method='PATCH', )
 
-        #Updates DB with new user badge
-        self.update_badge_request = requests.post("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" %(self.local_id, self.id_token),
-                                    data=json.dumps(post_badges))
-
         self.root.ids['home_screen'].ids['progress_bar'].value = 0
 
         #Updates level from DB
@@ -615,13 +798,53 @@ class SmartFit(MDApp):
         level.text = "Level " + str(self.level)
 
         #Populate users badge collection
-        badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
-        img = Image(source=self.badge)
-        badge_collection.add_widget(img)
+        if self.badge != "":
+            badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
+            img = Image(source=self.badge)
+            lbl = Label(text="Badge Unlocked", font_name="Alphakind", color=(0, 0, 0, 1))
+            badge_collection.add_widget(img)
+            badge_collection.add_widget(lbl)
+
+        self.xp_label = self.root.ids['home_screen'].ids['xp_label']
+        self.xp_label.text = "0" + "/" + str(self.new_max) + " XP"
+
+    def new_user_info(self):
+        show = P()
+
+        self.popup_window = Popup(title="Update", content=show, size_hint=(None, None), size=(400,300))
+
+        self.popup_window.open()
+
+    def update_new_user_info(self, new_height, new_weight, error_label):
+        if new_height == "" or new_weight == "":
+            error_label.text = "Please fill in all fields"
+
+        else:
+            patch_new_info = '{"Weight": %s, "Height": %s}' %(new_weight, new_height)
+
+            self.update_newinfo_request = UrlRequest(
+                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=patch_new_info, ca_file=certifi.where(), method='PATCH',)
+
+            bmi_label = self.root.ids['home_screen'].ids['bmi_label']
+            bmi_label.text = str(round((int(new_weight) / int(new_height) / int(new_height)) * 10000))
+
+            if int(bmi_label.text) >= 18 and int(bmi_label.text) <= 25:
+                bmi_label.color = 0, 100, 0, 1
+
+            elif int(bmi_label.text) < 18:
+                bmi_label.color = 1, 0.9, 0, 1
+
+            elif int(bmi_label.text) >= 26 and int(bmi_label.text) <= 30:
+                bmi_label.color = 1, 0.6, 0, 1
+
+            elif int(bmi_label.text) > 30:
+                bmi_label.color = 1, 0, 0, 1
+
+            self.popup_window.dismiss()
 
     def close_dialog(self, obj):
         self.dialog.dismiss(force=True)
-
 
     def close_dialog2(self, obj):
         self.dialog2.dismiss(force=True)
@@ -670,5 +893,10 @@ class SmartFit(MDApp):
             self.root.ids['food_search_screen'].ids['calories_label'].text = ""
             self.root.ids['food_search_screen'].ids['food_search'].text = ""
             self.root.ids['food_search_screen'].ids['food_img'].source = ""
+
+
+    def notifications(self, kwargs):
+      notification.notify("SmartFit", "Make Sure To Workout & Use SmartFit To Log Activities!")
+
 
 SmartFit().run()

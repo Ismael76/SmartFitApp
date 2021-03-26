@@ -71,6 +71,13 @@
             on_release:
                 app.change_screen("add_user_screen")
 
+        ImageButton:
+            size_hint: 1, .07
+            pos_hint: {"top": .3, "right": .8}
+            source: "icons/scale.png"
+            on_release:
+                app.new_user_info()
+
         LabelButton:
             size_hint: .9, .07
             pos_hint: {"top": .6, "right": 1}
@@ -96,3 +103,12 @@
             font_name: "Alphakind"
             on_release:
                 app.change_screen("add_user_screen")
+
+        LabelButton:
+            size_hint: .8, .07
+            pos_hint: {"top": .3, "right": 1}
+            text: "Edit Weight/Height"
+            color: 0, 0, 0, 1
+            font_name: "Alphakind"
+            on_release:
+                app.new_user_info()

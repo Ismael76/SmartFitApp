@@ -50,6 +50,14 @@
             size_hint: 0.5, .1
             id: progress_bar
 
+        Label:
+            pos_hint: {"top": .6, "right": .85}
+            size_hint: .01, .1
+            text: ""
+            font_name: "Alphakind"
+            id: xp_label
+            color: 0, 0, 0, 1
+
         GridLayout:
             canvas:
                 Color:
@@ -164,7 +172,7 @@
         Label:
             pos_hint: {"top": .25, "right": .75}
             size_hint: 1, .1
-            text: "Overweight \n    25 - 30"
+            text: "Overweight \n    26 - 30"
             font_name: "Alphakind"
             font_size: '17dp'
             color: 0, 0, 0, 1

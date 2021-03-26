@@ -1,0 +1,43 @@
+<P>:
+    GridLayout:
+        rows: 1
+        size_hint: 1, .2
+        pos_hint:{"top": 1, "right": 1}
+        TextInput:
+            id: register_new_weight
+            input_filter: 'float'
+            hint_text: "Enter New Weight (KG)"
+            font_name: "Alphakind"
+
+    GridLayout:
+        rows: 1
+        pos_hint:{"top": .6, "right": 1}
+        size_hint: 1, .2
+        TextInput:
+            id: register_new_height
+            input_filter: 'float'
+            hint_text: "Enter New Height (CM)"
+            font_name: "Alphakind"
+
+
+    GridLayout:
+        rows: 1
+        size_hint_x: None
+        width: '230dp'
+        pos_hint:{"top": .3, "right": 1}
+        MDFlatButton:
+            text:"UPDATE"
+            text_color: 0.89,.57,0,1
+            on_release: app.update_new_user_info(register_new_height.text, register_new_weight.text, error_label)
+
+
+    GridLayout:
+        rows: 1
+        size_hint_x: None
+        width: '260dp'
+        pos_hint:{"top": .6, "right": 1}
+        MDLabel:
+            id: error_label
+            text: ""
+            color: 1, 0, 0, 1
+            font_name: "Alphakind"

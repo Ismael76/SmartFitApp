@@ -23,6 +23,7 @@ class FriendList(FloatLayout):
         unique_id =  list(data.keys())[0]
 
         friend_avatar = data[unique_id]['Avatar']
+        #print(friend_avatar)
 
         friend_image = ImageButton(source="icons/avatars/" + friend_avatar, size_hint=(.3, .5), pos_hint={"top":.9, "right": 0.3}, on_release=partial(App.get_running_app().friends_screen, kwargs['friend_id']))
 

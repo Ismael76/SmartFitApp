@@ -100,9 +100,44 @@
 
         GridLayout:
             rows: 1
+            size_hint: .2, .1
+            pos_hint: {"top": .3, "right": .3}
+            MDCheckbox:
+                group: "gender"
+                size_hint: 1, .1
+                id: gender_male
+                color: 0, 0, 0, 1
+
+            Label:
+                size_hint: 1, .1
+                pos_hint: {"top": .3, "right": 1}
+                font_name: "Alphakind"
+                color: 0, 0, 0, 1
+                text: "Male"
+
+        GridLayout:
+            rows: 1
+            size_hint: .2, .1
+            pos_hint: {"top": .3, "right": .5}
+            MDCheckbox:
+                group: "gender"
+                size_hint: 1, .1
+                pos_hint: {"top": .3, "right": 1}
+                id: gender_female
+                color: 0, 0, 0, 1
+
+            Label:
+                size_hint: 1, .1
+                pos_hint: {"top": .3, "right": 1}
+                font_name: "Alphakind"
+                color: 0, 0, 0, 1
+                text: "Female"
+
+        GridLayout:
+            rows: 1
             size_hint_x: None
             width: '340dp'
-            pos_hint:{"top": .25, "right": .9}
+            pos_hint:{"top": .2, "right": .9}
             MDFlatButton:
                 increment_width: '250dp'
                 text: "CREATE ACCOUNT"

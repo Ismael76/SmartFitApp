@@ -11,6 +11,8 @@
 #:include kv/Friendscreen.kv
 #:include kv/Badgescreen.kv
 #:include kv/Foodsearchscreen.kv
+#:include kv/Leaderboardscreen.kv
+#:include kv/Popup.kv
 
 <Item>
     ImageLeftWidget:
@@ -56,6 +58,9 @@ GridLayout:
             BadgeScreen:
                 name: "badge_screen"
                 id: badge_screen
+            LeaderboardScreen:
+                name: "leaderboard_screen"
+                id: leaderboard_screen
             FoodSearchScreen:
                 name: "food_search_screen"
                 id: food_search_screen
@@ -128,6 +133,14 @@ GridLayout:
                                 app.change_screen("food_search_screen")
                             IconLeftWidget:
                                 icon: 'magnify'
+
+                        OneLineIconListItem:
+                            text: 'Leaderboards'
+                            on_press:
+                                root.ids['nav_drawer'].set_state("close")
+                                app.change_screen("leaderboard_screen")
+                            IconLeftWidget:
+                                icon: 'podium'
 
                         OneLineIconListItem:
                             text: 'Sign Out'
