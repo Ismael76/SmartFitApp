@@ -20,9 +20,38 @@
                     icon: 'home'
                     on_action_button: app.change_screen("home_screen")
 
+        Image:
+            size_hint: 1, .08
+            pos_hint:{"top": .9, "right": .7}
+            id: friend_avatar
+            source:
+
+        Label:
+            pos_hint: {"top": .85, "right": .7}
+            size_hint: 1, .1
+            id: friend_id_num
+            text: ""
+            color: 0, 0, 0, 1
+            font_name: "Alphakind"
+
+        Label:
+            pos_hint: {"top": .9, "right": 1}
+            size_hint: 1, .1
+            id: friend_level
+            text: ""
+            color: 0, 0, 0, 1
+            font_name: "Alphakind"
+
+        Label:
+            pos_hint: {"top": .85, "right": 1}
+            size_hint: 1, .1
+            id: friend_name
+            text: ""
+            color: 0, 0, 0, 1
+            font_name: "Alphakind"
 
         ScrollView:
-            pos_hint: {"top": .88, "right": 1}
+            pos_hint: {"top": .77, "right": 1}
             size_hint: 1, .7
             GridLayout:
                 id: friend_banner_grid

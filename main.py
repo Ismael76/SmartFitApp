@@ -38,7 +38,7 @@ from plyer import notification
 
 os.environ['SSL_CERT_FILE'] = certifi.where()
 
-Window.size = (400, 700) #Comment This Line Out When Deploying As APK
+#Window.size = (400, 700) #Comment This Line Out When Deploying As APK
 
 class HomeScreen(Screen):
     pass
@@ -493,6 +493,22 @@ class SmartFit(MDApp):
             if W.__class__ == WorkoutGrid:
                 banner.remove_widget(W)
 
+        #Populate friend's avatar image
+        friend_avatar_image = self.root.ids['friend_screen'].ids['friend_avatar']
+        friend_avatar_image.source = "icons/avatars/" + list(data.values())[0]['Avatar']
+
+        #Populate friend's id
+        friends_id = self.root.ids['friend_screen'].ids['friend_id_num']
+        friends_id.text = "ID: " + str(self.friends_id)
+
+        #Populate friend's level
+        friend_level = self.root.ids['friend_screen'].ids['friend_level']
+        friend_level.text = "Level:  " + str(list(data.values())[0]['Level'])
+
+        #Populate friend's name
+        friend_name = self.root.ids['friend_screen'].ids['friend_name']
+        friend_name.text = "Name:  " + list(data.values())[0]['Name']
+
         #Populate friend screen
         if workouts == "":
             self.root.ids['friend_screen'].ids['no_friend_activity_label'].text = "This user has no logged activities"
@@ -511,7 +527,6 @@ class SmartFit(MDApp):
             banner.add_widget(W)
 
         self.change_screen("friend_screen")
-
 
     def log_workout(self):
         result = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json?auth=" + self.id_token)
@@ -586,33 +601,33 @@ class SmartFit(MDApp):
         #Based off how many calories a user burns they gain the relevant xp
         if int(workout_calories_burnt) == 0:
             self.xp_earnt = 0
-            self.points +=5
+            self.points +=0
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        elif int(workout_calories_burnt) > 100 and int(workout_calories_burnt) < 300:
+        elif int(workout_calories_burnt) > 0 and int(workout_calories_burnt) < 100:
             self.xp_earnt = 5
             self.points += 10
             #Add xp to progress bar
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        elif int(workout_calories_burnt) > 300 and int(workout_calories_burnt) < 700:
+        elif int(workout_calories_burnt) > 100 and int(workout_calories_burnt) < 200:
             self.xp_earnt = 10
-            self.points += 15
-            self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
-
-        elif int(workout_calories_burnt) > 700 and int(workout_calories_burnt) < 1000:
-            self.xp_earnt = 20
             self.points += 20
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        elif int(workout_calories_burnt) > 1000 and int(workout_calories_burnt) < 2000:
-            self.xp_earnt = 30
-            self.points += 25
+        elif int(workout_calories_burnt) > 200 and int(workout_calories_burnt) < 400:
+            self.xp_earnt = 20
+            self.points += 30
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        elif int(workout_calories_burnt) > 2000:
+        elif int(workout_calories_burnt) > 400 and int(workout_calories_burnt) < 600:
+            self.xp_earnt = 30
+            self.points += 40
+            self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
+
+        elif int(workout_calories_burnt) > 600:
             self.xp_earnt = 40
-            self.points += 30
+            self.points += 50
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
 
@@ -873,8 +888,6 @@ class SmartFit(MDApp):
             else:
                 self.get_food = requests.get('https://api.edamam.com/api/food-database/v2/parser?ingr={0}%20&app_id=c649c398&app_key=9d0b2632cb6aff689dffad7080d73fb9'.format(food_input))
                 self.food_data = json.loads(self.get_food.content.decode())
-
-                print(self.food_data['parsed'][0]['food']['label'])
 
                 calories_label.text = "Calories:      " + str(self.food_data['parsed'][0]['food']['nutrients']['ENERC_KCAL']) + " Kcals"
                 carb_label.text = "Carbohydrates:     " + str(self.food_data['parsed'][0]['food']['nutrients']['CHOCDF']) + " G"

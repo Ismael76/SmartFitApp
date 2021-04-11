@@ -19,9 +19,15 @@
                     icon: 'home'
                     on_action_button: app.change_screen("home_screen")
 
+        Label:
+            pos_hint: {"top": .94, "right": 1}
+            size_hint: 1, .1
+            text: "Log"
+            color: 0, 0, 0, 1
+            font_name: "Alphakind"
 
         ScrollView:
-            pos_hint: {"top": .88, "right": 1}
+            pos_hint: {"top": .86, "right": 1}
             size_hint: 1, .7
             GridLayout:
                 id: banner_grid
