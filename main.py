@@ -826,7 +826,7 @@ class SmartFit(MDApp):
     def new_user_info(self):
         show = P()
 
-        self.popup_window = Popup(title="Update", content=show, size_hint=(None, None), size=(400,300))
+        self.popup_window = Popup(title="Update", content=show, size_hint=(1, .5))
 
         self.popup_window.open()
 
