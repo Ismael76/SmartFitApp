@@ -842,7 +842,13 @@ class SmartFit(MDApp):
                     self.local_id, self.id_token), req_body=patch_new_info, ca_file=certifi.where(), method='PATCH',)
 
             bmi_label = self.root.ids['home_screen'].ids['bmi_label']
-            bmi_label.text = str(round((int(new_weight) / int(new_height) / int(new_height)) * 10000))
+            bmi_label.text = str(round((float(new_weight) / float(new_height) / float(new_height)) * 10000))
+
+            home_weight_label = self.root.ids['home_screen'].ids['weight_label']
+            home_weight_label.text = str(new_weight) + " KG"
+
+            home_height_label = self.root.ids['home_screen'].ids['height_label']
+            home_height_label.text = str(new_height) + " CM"
 
             if int(bmi_label.text) >= 18 and int(bmi_label.text) <= 25:
                 bmi_label.color = 0, 100, 0, 1
