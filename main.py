@@ -38,7 +38,7 @@ from plyer import notification
 
 os.environ['SSL_CERT_FILE'] = certifi.where()
 
-# Window.size = (400, 700) #Comment This Line Out When Deploying As APK
+Window.size = (400, 700) #Comment This Line Out When Deploying As APK
 
 class HomeScreen(Screen):
     pass

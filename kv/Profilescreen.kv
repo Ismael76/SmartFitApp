@@ -82,7 +82,8 @@
             size_hint: .9, .07
             pos_hint: {"top": .6, "right": 1}
             text: "Update Avatar"
-            color: 0, 0, 0, 1
+            underline: True
+            color: 0, 0, 1, 1
             font_name: "Alphakind"
             on_release:
                 app.change_screen("change_avatar_screen")
@@ -91,7 +92,8 @@
             size_hint: .9, .07
             pos_hint: {"top": .5, "right": 1}
             text: "View Badges"
-            color: 0, 0, 0, 1
+            underline: True
+            color: 0, 0, 1, 1
             font_name: "Alphakind"
             on_release: app.change_screen("badge_screen")
 
@@ -99,7 +101,8 @@
             size_hint: .9, .07
             pos_hint: {"top": .4, "right": 1}
             text: "Add Friend"
-            color: 0, 0, 0, 1
+            underline: True
+            color: 0, 0, 1, 1
             font_name: "Alphakind"
             on_release:
                 app.change_screen("add_user_screen")
@@ -108,7 +111,8 @@
             size_hint: .8, .07
             pos_hint: {"top": .3, "right": 1}
             text: "Edit Weight/Height"
-            color: 0, 0, 0, 1
+            underline: True
+            color: 0, 0, 1, 1
             font_name: "Alphakind"
             on_release:
                 app.new_user_info()
