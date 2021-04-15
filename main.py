@@ -2,7 +2,7 @@ from kivy.uix.floatlayout import FloatLayout
 from kivy.uix.gridlayout import GridLayout
 from kivymd.app import MDApp
 from kivy.lang import Builder
-from kivy.uix.screenmanager import Screen
+from kivy.uix.screenmanager import Screen, CardTransition, NoTransition, SlideTransition
 from kivy.uix.button import ButtonBehavior
 from kivy.uix.image import Image, AsyncImage
 from kivy.core.window import Window
@@ -223,7 +223,6 @@ class SmartFit(MDApp):
                 bmi_label.color = 1, 0, 0, 1
                 #Note: To get RGB colours above we get the three rgb colour values from rapidtables.com then we divide each one by 255
 
-
             #Get the users friends list
             self.friends_list = data['Friends']
 
@@ -397,10 +396,9 @@ class SmartFit(MDApp):
         #Patch request to update data (Avatar Image) in DB
         the_data = '{"Avatar": "%s"}' % image
         the_data2 = '{"Avatar": "%s"}' % image
-        requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/" + self.local_id + ".json",
-                       data=the_data)
-        requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/" + self.local_id + ".json",
-                       data=the_data2)
+        UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s" %(self.local_id), req_body=the_data, ca_file=certifi.where(), method='PATCH', )
+        UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s"% (self.local_id), req_body=the_data2, ca_file=certifi.where(), method='PATCH', )
+
         self.change_screen("profile_screen")
 
     def change_screen(self, screen_name):
@@ -472,7 +470,7 @@ class SmartFit(MDApp):
             patch_data = '{"Friends": "%s"}' % self.friends_list
             userdata_request = requests.get('https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/.json?orderBy="User_Id"&equalTo=' + user_id)
             data = userdata_request.json()
-            friend_patch = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s.json?auth=%s" % (self.local_id, self.id_token), data=patch_data)
+            friend_patch = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s.json?auth=%s" % (self.local_id, self.id_token), req_body=patch_data, ca_file=certifi.where(), method='PATCH', )
             friend_banner = FriendList(friend_id=user_id, name=str(list(data.values())[0]['Name']), level=str(list(data.values())[0]['Level']))
             self.root.ids["social_screen"].ids["friends_list_grid"].add_widget(friend_banner)
             self.root.ids["social_screen"].ids["no_friend_label"].text = ""
@@ -586,8 +584,8 @@ class SmartFit(MDApp):
         workout_data = {"Workout_Image": self.workout_icon, "Description": workout_description, "Likes": 0, "Amount": workout_amount,
                         "Units": workout_unit, "Unit_Image": self.choice, "Date": workout_day_date + "/" + workout_month_date + "/" + workout_year_date}
 
-        workout_req = requests.post("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Workouts.json?auth=%s" %(self.local_id, self.id_token),
-                                    data=json.dumps(workout_data))
+        workout_req = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=workout_data, ca_file=certifi.where(), method='POST',)
 
         banner = self.root.ids['log_screen'].ids['banner_grid']
         self.root.ids['log_screen'].ids['no_activity_label'].text = ""
@@ -604,23 +602,23 @@ class SmartFit(MDApp):
             self.points +=0
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        elif int(workout_calories_burnt) > 0 and int(workout_calories_burnt) < 100:
+        elif int(workout_calories_burnt) > 0 and int(workout_calories_burnt) <= 100:
             self.xp_earnt = 5
             self.points += 10
             #Add xp to progress bar
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        elif int(workout_calories_burnt) > 100 and int(workout_calories_burnt) < 200:
+        elif int(workout_calories_burnt) > 100 and int(workout_calories_burnt) <= 200:
             self.xp_earnt = 10
             self.points += 20
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        elif int(workout_calories_burnt) > 200 and int(workout_calories_burnt) < 400:
+        elif int(workout_calories_burnt) > 200 and int(workout_calories_burnt) <= 400:
             self.xp_earnt = 20
             self.points += 30
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
 
-        elif int(workout_calories_burnt) > 400 and int(workout_calories_burnt) < 600:
+        elif int(workout_calories_burnt) > 400 and int(workout_calories_burnt) <= 600:
             self.xp_earnt = 30
             self.points += 40
             self.root.ids['home_screen'].ids['progress_bar'].value = self.xp + self.xp_earnt
@@ -637,9 +635,12 @@ class SmartFit(MDApp):
         patch_points = '{"Points": %s}' % (self.points)
 
         #Updates the DB with new XP
-        self.update_xp_request = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s.json?auth=%s" % (self.local_id, self.id_token), data=patch_xp)
 
-        self.update_points_request = requests.patch("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/%s.json?auth=%s" % (self.local_id, self.id_token), data=patch_points)
+        self.update_xp_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+            self.local_id, self.id_token), req_body=patch_xp, ca_file=certifi.where(), method='PATCH', )
+
+        self.update_points_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=patch_points, ca_file=certifi.where(), method='PATCH', )
 
         self.xp_label = self.root.ids['home_screen'].ids['xp_label']
         self.xp_label.text = str((self.xp + int(self.xp_earnt))) + "/" + str(data['Max']) + " XP"
@@ -718,10 +719,9 @@ class SmartFit(MDApp):
             self.dialog2.open()
             post_badges = {"Badges": self.badge}
             #Updates DB with new user badge
-            self.update_badge_request = requests.post(
-                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
-                self.local_id, self.id_token),
-                data=json.dumps(post_badges))
+
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
 
         elif (self.level) == 5:
             self.badge = "icons/badges/005-award.png"
@@ -730,10 +730,8 @@ class SmartFit(MDApp):
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
             post_badges = {"Badges": self.badge}
-            self.update_badge_request = requests.post(
-                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
-                self.local_id, self.id_token),
-                data=json.dumps(post_badges))
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
 
         elif (self.level) == 10:
             self.badge = "icons/badges/007-badge.png"
@@ -742,10 +740,8 @@ class SmartFit(MDApp):
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
             post_badges = {"Badges": self.badge}
-            self.update_badge_request = requests.post(
-                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
-                self.local_id, self.id_token),
-                data=json.dumps(post_badges))
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
 
         elif (self.level) == 15:
             self.badge = "icons/badges/012-trophy.png"
@@ -754,10 +750,8 @@ class SmartFit(MDApp):
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
             post_badges = {"Badges": self.badge}
-            self.update_badge_request = requests.post(
-                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
-                self.local_id, self.id_token),
-                data=json.dumps(post_badges))
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
 
         elif (self.level) == 25:
             self.badge = "icons/badges/036-award.png"
@@ -766,10 +760,8 @@ class SmartFit(MDApp):
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
             post_badges = {"Badges": self.badge}
-            self.update_badge_request = requests.post(
-                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
-                self.local_id, self.id_token),
-                data=json.dumps(post_badges))
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
 
         elif (self.level) == 50:
             self.badge = "icons/badges/042-trophy.png"
@@ -778,10 +770,8 @@ class SmartFit(MDApp):
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
             post_badges = {"Badges": self.badge}
-            self.update_badge_request = requests.post(
-                "https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
-                self.local_id, self.id_token),
-                data=json.dumps(post_badges))
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
 
         close_button1 = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
         self.dialog = MDDialog(title="[font=Alphakind.ttf]Level Gain[/font]",
