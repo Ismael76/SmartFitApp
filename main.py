@@ -299,13 +299,15 @@ class SmartFit(MDApp):
 
             #Populate users badge collection
             badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
+            self.badge_tier = 0
             self.badges = data['Badges']
             if self.badges != "":
                 badge_keys = list(self.badges.keys())
                 for badge_key in badge_keys:
+                    self.badge_tier += 1
                     badge = self.badges[badge_key]
                     img = Image(source=badge['Badges'])
-                    lbl = Label(text="Badge Unlocked", font_name= "Alphakind", color= (0,0,0,1))
+                    lbl = Label(text="Tier %s Badge" % self.badge_tier, font_name= "Alphakind", color= (0,0,0,1))
                     badge_collection.add_widget(img)
                     badge_collection.add_widget(lbl)
 
@@ -396,8 +398,35 @@ class SmartFit(MDApp):
         #Patch request to update data (Avatar Image) in DB
         the_data = '{"Avatar": "%s"}' % image
         the_data2 = '{"Avatar": "%s"}' % image
-        UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s" %(self.local_id), req_body=the_data, ca_file=certifi.where(), method='PATCH', )
-        UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s"% (self.local_id), req_body=the_data2, ca_file=certifi.where(), method='PATCH', )
+        UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s.json" % (self.local_id), req_body=the_data, ca_file=certifi.where(), method='PATCH', )
+        UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/%s.json" % (self.local_id), req_body=the_data2, ca_file=certifi.where(), method='PATCH', )
+
+        result3 = requests.get("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/.json")
+        data3 = json.loads(result3.content.decode())
+
+        leaderboard_grid = self.root.ids['leaderboard_screen'].ids['leaderboard_grid']
+        # Remove widgets from leaderboards screen so it doesn't duplicate widgets
+        for x in leaderboard_grid.walk():
+            if x.__class__ == Leaderboard:
+                leaderboard_grid.remove_widget(x)
+
+        # Populate Leaderboards screen
+        leaderboard_keys = list(data3)
+        leaderboard_keys.sort(key=lambda value: data3[value]['Points'])
+        leaderboard_keys = leaderboard_keys[::-1]
+        self.pos1 = 0
+        for leaderboard_key in leaderboard_keys:
+            pos = data3[leaderboard_key]
+            self.pos1 += 1
+            if self.pos1 > 3:
+                leaderboard_banner = Leaderboard(image_pos='icons/grey.png', pos=str(self.pos1), avatar=pos['Avatar'],
+                                                 name=str(pos['Name']), points=str(pos['Points']))
+                self.root.ids['leaderboard_screen'].ids['leaderboard_grid'].add_widget(leaderboard_banner)
+            else:
+                self.img_pos1 = "icons/medal %s.png" % self.pos1
+                leaderboard_banner = Leaderboard(image_pos=self.img_pos1, pos=str(""), avatar=pos['Avatar'],
+                                                 name=str(pos['Name']), points=str(pos['Points']))
+                self.root.ids['leaderboard_screen'].ids['leaderboard_grid'].add_widget(leaderboard_banner)
 
         self.change_screen("profile_screen")
 
@@ -584,8 +613,8 @@ class SmartFit(MDApp):
         workout_data = {"Workout_Image": self.workout_icon, "Description": workout_description, "Likes": 0, "Amount": workout_amount,
                         "Units": workout_unit, "Unit_Image": self.choice, "Date": workout_day_date + "/" + workout_month_date + "/" + workout_year_date}
 
-        workout_req = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
-                self.local_id, self.id_token), req_body=workout_data, ca_file=certifi.where(), method='POST',)
+        workout_req = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Workouts.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=json.dumps(workout_data), ca_file=certifi.where(),)
 
         banner = self.root.ids['log_screen'].ids['banner_grid']
         self.root.ids['log_screen'].ids['no_activity_label'].text = ""
@@ -640,6 +669,9 @@ class SmartFit(MDApp):
             self.local_id, self.id_token), req_body=patch_xp, ca_file=certifi.where(), method='PATCH', )
 
         self.update_points_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=patch_points, ca_file=certifi.where(), method='PATCH', )
+
+        self.update_points_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Leaderboard/%s/.json?auth=%s" % (
                 self.local_id, self.id_token), req_body=patch_points, ca_file=certifi.where(), method='PATCH', )
 
         self.xp_label = self.root.ids['home_screen'].ids['xp_label']
@@ -709,69 +741,64 @@ class SmartFit(MDApp):
                 self.local_id, self.id_token), req_body=patch_max, ca_file=certifi.where(), method='PATCH', )
 
         self.badge = ""
+        self.badge_tier = 0
 
         #If user reaches certain levels they earn badges as a reward
         if (self.level) == 2:
             self.badge = "icons/badges/002-medal.png"
             close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
-            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 2 badge Unlocked[/font]",
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Tier 1 badge Unlocked[/font]",
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
-            post_badges = {"Badges": self.badge}
+            #post_badges = "{'Badges': 'Hello'}"
             #Updates DB with new user badge
-
-            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
-                self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                self.local_id, self.id_token), req_body=json.dumps({'Badges': self.badge}), ca_file=certifi.where(),)
 
         elif (self.level) == 5:
             self.badge = "icons/badges/005-award.png"
             close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
-            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 5 badge Unlocked[/font]",
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Tier 2 badge Unlocked[/font]",
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
-            post_badges = {"Badges": self.badge}
-            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
-                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=json.dumps({'Badges': self.badge}), ca_file=certifi.where(),)
 
         elif (self.level) == 10:
             self.badge = "icons/badges/007-badge.png"
             close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
-            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 10 badge Unlocked[/font]",
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Tier 3 badge Unlocked[/font]",
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
-            post_badges = {"Badges": self.badge}
-            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
-                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=json.dumps({'Badges': self.badge}), ca_file=certifi.where(),)
 
         elif (self.level) == 15:
             self.badge = "icons/badges/012-trophy.png"
             close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
-            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 15 badge Unlocked[/font]",
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Tier 4 badge Unlocked[/font]",
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
-            post_badges = {"Badges": self.badge}
-            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
-                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=json.dumps({'Badges': self.badge}), ca_file=certifi.where(),)
 
         elif (self.level) == 25:
             self.badge = "icons/badges/036-award.png"
             close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
-            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 25 badge Unlocked[/font]",
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Tier 5 badge Unlocked[/font]",
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
-            post_badges = {"Badges": self.badge}
-            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
-                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=json.dumps({'Badges': self.badge}), ca_file=certifi.where(),)
 
         elif (self.level) == 50:
             self.badge = "icons/badges/042-trophy.png"
             close_button2 = MDFlatButton(text="CLOSE", on_release=self.close_dialog2, text_color=self.theme_cls.primary_color)
-            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Level 50 badge Unlocked[/font]",
+            self.dialog2 = MDDialog(title="[font=Alphakind.ttf]Badge Earnt[/font]", type="simple", size_hint=(.85, 1), items=[Item(text="[font=Alphakind.ttf]Tier 6 badge Unlocked[/font]",
             source=self.badge), ], buttons=[close_button2])
             self.dialog2.open()
-            post_badges = {"Badges": self.badge}
-            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/.json?auth=%s" % (
-                    self.local_id, self.id_token), req_body=post_badges, ca_file=certifi.where(), method='POST', )
+            self.update_badge_request = UrlRequest("https://smartfit-ad8c3-default-rtdb.firebaseio.com/Users/%s/Badges.json?auth=%s" % (
+                    self.local_id, self.id_token), req_body=json.dumps({'Badges': self.badge}), ca_file=certifi.where(),)
 
         close_button1 = MDFlatButton(text="CLOSE", on_release=self.close_dialog, text_color=self.theme_cls.primary_color)
         self.dialog = MDDialog(title="[font=Alphakind.ttf]Level Gain[/font]",
@@ -804,9 +831,10 @@ class SmartFit(MDApp):
 
         #Populate users badge collection
         if self.badge != "":
+            self.badge_tier +=1
             badge_collection = self.root.ids['badge_screen'].ids['badge_collection']
             img = Image(source=self.badge)
-            lbl = Label(text="Badge Unlocked", font_name="Alphakind", color=(0, 0, 0, 1))
+            lbl = Label(text="New Badge Unlocked!", font_name="Alphakind", color=(0, 0, 0, 1))
             badge_collection.add_widget(img)
             badge_collection.add_widget(lbl)
 
