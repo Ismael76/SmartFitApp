@@ -21,8 +21,8 @@ from kivymd.uix.button import MDRectangleFlatButton, MDRoundFlatButton, MDFlatBu
 from os import walk
 import kivy.utils
 from kivy.uix.popup import Popup
-#import pandas as pd
-#from sklearn.tree import DecisionTreeClassifier
+import pandas as pd
+from sklearn.tree import DecisionTreeClassifier
 import os
 from kivy.clock import Clock
 from kivy.app import App
@@ -38,7 +38,7 @@ from plyer import notification
 
 os.environ['SSL_CERT_FILE'] = certifi.where()
 
-#Window.size = (400, 700) #Comment This Line Out When Deploying As APK
+Window.size = (400, 700) #Comment This Line Out When Deploying As APK
 
 class HomeScreen(Screen):
     pass
@@ -126,10 +126,10 @@ class SmartFit(MDApp):
             RoundedRectangle(size=self.workout_icon_widget.size, pos=self.workout_icon_widget.pos, radius=[5, ])
 
     def on_start(self):
-        #user_data = pd.read_csv('userdata.csv')
-        #X = user_data.drop(columns=['Index'])
-        #y = user_data['Index']
-        #model = DecisionTreeClassifier()
+        user_data = pd.read_csv('userdata.csv')
+        X = user_data.drop(columns=['Index'])
+        y = user_data['Index']
+        model = DecisionTreeClassifier()
 
         self.root.ids["social_screen"].ids["no_friend_label"].text = "You currently do not have any friends"
         self.root.ids['log_screen'].ids['no_activity_label'].text = "You do not have logged activities"
@@ -191,21 +191,21 @@ class SmartFit(MDApp):
             height_label.text = str(data['Height']) + " CM"
 
             #Uses ML to predict and categorize a user in a BMI
-            #model.fit(X, y)
-            #self.predictions = model.predict([[data['Gender'], float(data['Height']), float(data['Weight'])]])
+            model.fit(X, y)
+            self.predictions = model.predict([[data['Gender'], float(data['Height']), float(data['Weight'])]])
 
-            #if self.predictions[0] == 5:
-             #   Clock.schedule_interval(self.notifications, 14400)
-            #elif self.predictions[0] == 4:
-            #    Clock.schedule_interval(self.notifications, 21600)
-            #elif self.predictions[0] == 3:
-            #    Clock.schedule_interval(self.notifications, 28800)
-            #elif self.predictions[0] == 2:
-            #    Clock.schedule_interval(self.notifications, 43200)
-            #elif self.predictions[0] == 1:
-            #    Clock.schedule_interval(self.notifications, 80000)
-            #elif self.predictions[0] == 0:
-            #    Clock.schedule_interval(self.notifications, 80000)
+            if self.predictions[0] == 5:
+                Clock.schedule_interval(self.notifications, 28800)
+            elif self.predictions[0] == 4:
+                Clock.schedule_interval(self.notifications, 28800)
+            elif self.predictions[0] == 3:
+                Clock.schedule_interval(self.notifications, 43200)
+            elif self.predictions[0] == 2:
+                Clock.schedule_interval(self.notifications, 80000)
+            elif self.predictions[0] == 1:
+                Clock.schedule_interval(self.notifications, 80000)
+            elif self.predictions[0] == 0:
+                Clock.schedule_interval(self.notifications, 80000)
 
             bmi_label = self.root.ids['home_screen'].ids['bmi_label']
             bmi_label.text = str(round((float(data['Weight']) / float(data['Height']) / float(data['Height']))*10000))
@@ -405,6 +405,7 @@ class SmartFit(MDApp):
         data3 = json.loads(result3.content.decode())
 
         leaderboard_grid = self.root.ids['leaderboard_screen'].ids['leaderboard_grid']
+
         # Remove widgets from leaderboards screen so it doesn't duplicate widgets
         for x in leaderboard_grid.walk():
             if x.__class__ == Leaderboard:
