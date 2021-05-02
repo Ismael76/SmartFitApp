@@ -23,6 +23,8 @@ import kivy.utils
 from kivy.uix.popup import Popup
 import pandas as pd
 from sklearn.tree import DecisionTreeClassifier
+from sklearn.model_selection import train_test_split
+from sklearn.metrics import accuracy_score
 import os
 from kivy.clock import Clock
 from kivy.app import App
@@ -129,6 +131,7 @@ class SmartFit(MDApp):
         user_data = pd.read_csv('userdata.csv')
         X = user_data.drop(columns=['Index'])
         y = user_data['Index']
+        #X_train, X_test, y_train, y_test = train_test_split(X, y, test_size=0.2)  # Allocate 20% of data for testing
         model = DecisionTreeClassifier()
 
         self.root.ids["social_screen"].ids["no_friend_label"].text = "You currently do not have any friends"
@@ -193,6 +196,11 @@ class SmartFit(MDApp):
             #Uses ML to predict and categorize a user in a BMI
             model.fit(X, y)
             self.predictions = model.predict([[data['Gender'], float(data['Height']), float(data['Weight'])]])
+
+            #Accurary of decision tree algorithm
+            #model.fit(X_train, y_train)
+            #self.predictions = model.predict(X_test)
+            #print(accuracy_score(y_test, self.predictions))
 
             if self.predictions[0] == 5:
                 Clock.schedule_interval(self.notifications, 28800)
